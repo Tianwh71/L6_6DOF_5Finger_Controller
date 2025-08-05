@@ -28,34 +28,68 @@
 #include "data_structure.h"
 #include "event_groups.h"
 #include "semphr.h"
-#include "TJ_Motor_Control_fml.h"
 #include "stochastic_pooling.h"
 #include "upper_can_comm_drv.h"
 #include <stdlib.h>
 #include "my_math.h"
 #include "Common.h"
+#include "AAC_MotorControl_fml.h"
 
-
-Upper_Request upper_request =
-		{
-				.joint_angle_1 = 255,
-				.joint_angle_2 = 200,
-				.joint_angle_3 = 255,
-				.joint_angle_4 = 255,
-				.joint_angle_5 = 255,
-				.joint_angle_6 = 255,
-
+Hand_Action hand_action = 
+{
+	 .speed = 0x10,						//轨迹规划速度
+	 .amplitude = 0x80,				//动作幅值
+	 .number_of_turns = 0x64,	//圈数
+	 .finger_num = THUMB,			//单手指动作时指定的手指序号。部分指令用到
+	 .action_end = false,			//动作执行完毕
 };
-Lower_Response lower_response =
-		{
-				.hwk_hand_sensor = &hwk_hand_sensor,
+Upper_Request upper_request = 
+{
+	.thumb = 
+	{
+	 .speed_ref =(DEFAULT_SPEED-SPEED_MIN)*255/(SPEED_MAX-SPEED_MIN),				//速度控制
+	 .over_current_th = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
+	},
+	.index = 
+	{
+	 .speed_ref =(DEFAULT_SPEED-SPEED_MIN)*255/(SPEED_MAX-SPEED_MIN),				//速度控制
+	 .over_current_th = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
+	},
+	.middle = 
+	{
+	 .speed_ref =(DEFAULT_SPEED-SPEED_MIN)*255/(SPEED_MAX-SPEED_MIN),				//速度控制
+	 .over_current_th = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
+	},
+	.ring = 
+	{
+	 .speed_ref =(DEFAULT_SPEED-SPEED_MIN)*255/(SPEED_MAX-SPEED_MIN),				//速度控制
+	 .over_current_th = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
+	},
+	.little = 
+	{
+	 .speed_ref =(DEFAULT_SPEED-SPEED_MIN)*255/(SPEED_MAX-SPEED_MIN),				//速度控制
+	 .over_current_th = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+	.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
+	},
+	.pTip_Data_All = &finger_tip_data_all,
+	.pAction = &hand_action,
+};
+Lower_Response lower_response = 
+{
+	.pTip_Data_All = &finger_tip_data_all,
+	.pAction = &hand_action,
+	.hwk_hand_sensor = &hwk_hand_sensor,
 };
 Protocol_Aux_Data protocol_aux_data;
-
-Upper_Protocol upper_protocol =
-		{
-				.upper_request = &upper_request,
-				.lower_response = &lower_response,
+Upper_Protocol upper_protocol= 
+{
+	.upper_request = &upper_request,
+	.lower_response = &lower_response,
+	.protocol_aux_data = &protocol_aux_data,
 };
 
 /*
@@ -98,12 +132,12 @@ void comm_can_parser(Upper_Can_Transmit *can_trans, Upper_Request *upper_request
 	{
 		if (can_trans->receive_len == 7)
 		{
-			upper_request->joint_angle_1 = (can_trans->receive_buf[1] < 5) ? 5 : can_trans->receive_buf[1];   //由于硬件限位增加边界检查
-			upper_request->joint_angle_2 = can_trans->receive_buf[2];
-			upper_request->joint_angle_3 = can_trans->receive_buf[3];
-			upper_request->joint_angle_4 = can_trans->receive_buf[4];
-			upper_request->joint_angle_5 = can_trans->receive_buf[5];
-			upper_request->joint_angle_6 = (can_trans->receive_buf[6] < 15) ? 15 : can_trans->receive_buf[6];
+			upper_request->thumb.pitch_angle = (can_trans->receive_buf[1] < 5) ? 5 : can_trans->receive_buf[1];   //由于硬件限位增加边界检查
+			upper_request->index.pitch_angle = can_trans->receive_buf[2];
+			upper_request->middle.pitch_angle = can_trans->receive_buf[3];
+			upper_request->ring.pitch_angle = can_trans->receive_buf[4];
+			upper_request->little.pitch_angle = can_trans->receive_buf[5];
+			upper_request->thumb.roll_angle = (can_trans->receive_buf[6] < 15) ? 15 : can_trans->receive_buf[6];
 			aux_data->return_frame_makers |= RETURN_POSITION;
 			aux_data->frame_property = JOINT_POSITION_RCO;
 		}
@@ -111,35 +145,21 @@ void comm_can_parser(Upper_Can_Transmit *can_trans, Upper_Request *upper_request
 		{
 			aux_data->return_frame_makers |= RETURN_POSITION;
 		}
+		else
+		{
+			aux_data->return_frame_makers |= RETURN_ERROR;
+			aux_data->frame_property = ERROR_CODE;
+		}
 	}
 	break;
 	case MAX_PRESS_RCO:
 	{
-		if(can_trans->receive_len == 7)
-		{
-			upper_request->pressure_1 = can_trans->receive_buf[1];
-			upper_request->pressure_2 = can_trans->receive_buf[2];
-			upper_request->pressure_3 = can_trans->receive_buf[3];
-			upper_request->pressure_4 = can_trans->receive_buf[4];
-			upper_request->pressure_5 = can_trans->receive_buf[5];
-			upper_request->pressure_6 = can_trans->receive_buf[6];
-			aux_data->return_frame_makers |= RETURN_PRESS1;
-			aux_data->frame_property = MAX_PRESS_RCO;
-		}
+		
 	}
 	break;
 	case SPEED_RCO:
 	{
-		if(can_trans->receive_len == 6)
-		{
-			upper_request->speed_1 = can_trans->receive_buf[1];
-			upper_request->speed_2 = can_trans->receive_buf[2];
-			upper_request->speed_3 = can_trans->receive_buf[3];
-			upper_request->speed_4 = can_trans->receive_buf[4];
-			upper_request->speed_5 = can_trans->receive_buf[5];
-			aux_data->return_frame_makers |= RETURN_SPEED;
-			aux_data->frame_property = SPEED_RCO;
-		}
+		
 	}
 	break;
 	case Temp1:
@@ -175,6 +195,20 @@ void comm_can_parser(Upper_Can_Transmit *can_trans, Upper_Request *upper_request
 		}
 	}
 	break;
+	case Error_Code1:
+	{
+		if (can_trans->receive_len == 1)
+		{
+			aux_data->return_frame_makers |= RETURN_ERROR_CODE1;
+			aux_data->frame_property = Error_Code1;
+		}
+		else
+		{
+			aux_data->return_frame_makers |= RETURN_ERROR;
+			aux_data->frame_property = ERROR_CODE;
+		}
+	}
+	break;
 	case SYS_RESET:
 	{
 				__HAL_RCC_CLEAR_RESET_FLAGS();
@@ -192,12 +226,12 @@ void comm_can_send(Upper_Can_Transmit *can_trans, Lower_Response *lower_response
 		case JOINT_POSITION_RCO:
 		{
 			can_trans->send_buf[0] = JOINT_POSITION_RCO;
-			can_trans->send_buf[1] = lower_response->curr_joint_angle_1; // 大拇指关节角度
-			can_trans->send_buf[2] = lower_response->curr_joint_angle_2;
-			can_trans->send_buf[3] = lower_response->curr_joint_angle_3;
-			can_trans->send_buf[4] = lower_response->curr_joint_angle_4;
-			can_trans->send_buf[5] = lower_response->curr_joint_angle_5;
-			can_trans->send_buf[6] = lower_response->curr_joint_angle_6;
+			can_trans->send_buf[1] = lower_response->thumb.pitch_angle; // 大拇指关节角度
+			can_trans->send_buf[2] = lower_response->index.pitch_angle;
+			can_trans->send_buf[3] = lower_response->middle.pitch_angle;
+			can_trans->send_buf[4] = lower_response->ring.pitch_angle;
+			can_trans->send_buf[5] = lower_response->little.pitch_angle;
+			can_trans->send_buf[6] = lower_response->thumb.roll_angle;
 			FDCAN2_Send_Msg(can_trans->send_buf, 7, SELF_ID);
 		}
 		break;
@@ -221,25 +255,21 @@ void comm_can_send(Upper_Can_Transmit *can_trans, Lower_Response *lower_response
 		case Temp1:
 		{
 			can_trans->send_buf[0] = Temp1;
-			can_trans->send_buf[1] = lower_response->curr_temp_1;
-			can_trans->send_buf[2] = lower_response->curr_temp_2;
-			can_trans->send_buf[3] = lower_response->curr_temp_3;
-			can_trans->send_buf[4] = lower_response->curr_temp_4;
-			can_trans->send_buf[5] = lower_response->curr_temp_5;
-			can_trans->send_buf[6] = lower_response->curr_temp_6;
+			can_trans->send_buf[1] = lower_response->thumb.pitch_temperature;
+			can_trans->send_buf[2] = lower_response->index.pitch_temperature;
+			can_trans->send_buf[3] = lower_response->middle.pitch_temperature;
+			can_trans->send_buf[4] = lower_response->ring.pitch_temperature;
+			can_trans->send_buf[5] = lower_response->little.pitch_temperature;
+			can_trans->send_buf[6] = lower_response->thumb.roll_temperature;
 			FDCAN2_Send_Msg(can_trans->send_buf, 7, SELF_ID);
 		}
 		break;
 		case Temp2:
 		{
-			can_trans->send_buf[0] = Temp2;
-			can_trans->send_buf[1] = lower_response->current_mA_1;
-			can_trans->send_buf[2] = lower_response->current_mA_2;
-			can_trans->send_buf[3] = lower_response->current_mA_3;
-			can_trans->send_buf[4] = lower_response->current_mA_4;
-			can_trans->send_buf[5] = lower_response->current_mA_5;
-			can_trans->send_buf[6] = lower_response->current_mA_6;
-			FDCAN2_Send_Msg(can_trans->send_buf, 7, SELF_ID);
+		}
+		break;
+		case Error_Code1:
+		{
 		}
 		break;
 		default:
@@ -251,7 +281,7 @@ void event_can_dispose(void)
 	comm_can_parser(&upper_can_transmit, &upper_request, &protocol_aux_data); // can解析
 	// comm_can_touch_sensor_parser(&can_rx_get_queue, &upper_request, &lower_response, &protocol_aux_data);
 	/*飞特*/
-	tj_get_cmd(tj_servo, &tj_control_data, &upper_request, &protocol_aux_data);
+	ys_get_cmd(&hand,&ys_actuator,&upper_request,&protocol_aux_data);
 	// 在发送之前准备好数据
 	if (protocol_aux_data.return_frame_makers & RETURN_POSITION)
 	{
@@ -548,5 +578,35 @@ void comm_can_touch_sensor_parser(Can_Rx_Queue *pRx_queue, Upper_Request *pReque
 		}
 		break;
 		}
+	}
+}
+/*
+位置回写，在获取关节数据之后，将电机当前位置作为目标位置，
+*/
+void init_request_data(Upper_Request *request,Lower_Response *pResponse)
+{
+	Finger_Upper_Cmd *pFinger_cmd = (Finger_Upper_Cmd*) request;
+	Finger_Lower_Sta *pFinger_sta = (Finger_Lower_Sta *)&pResponse->thumb;
+	/*外部*/
+	Finger *pFinger = (Finger*) &hand;
+	/*外部*/
+	for(int i = 0;i<5;i++)
+	{
+		pFinger_cmd[i].pitch_angle = pFinger_sta[i].pitch_angle;
+		pFinger_cmd[i].roll_angle = pFinger_sta[i].roll_angle;
+		
+		pFinger_cmd[i].speed_ref = pFinger[i].speed;
+		pFinger_cmd[i].pitch_speed = pFinger[i].pitch_speed;
+		pFinger_cmd[i].roll_speed = pFinger[i].roll_speed;
+		
+		pFinger_cmd[i].over_current_th = pFinger[i].current;
+		pFinger_cmd[i].pitch_current = pFinger[i].pitch_current;
+		pFinger_cmd[i].roll_current = pFinger[i].roll_current;
+		
+		pFinger_cmd[i].pitch_temperature = pFinger[i].pitch_temperature;
+		pFinger_cmd[i].roll_temperature = pFinger[i].roll_temperature;
+		
+		pFinger_cmd[i].clear_fault = 0 ;
+		pFinger_cmd[i].rotor_lock_count_th = pFinger[i].rotor_lock_count_th;
 	}
 }

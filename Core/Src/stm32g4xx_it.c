@@ -22,10 +22,10 @@
 #include "stm32g4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "TJ_MotorDrive.h"
 #include "Common.h"
 #include "tip_sensor_comm_drv.h"
 #include "tip_sensor_comm_fml.h"
+#include "AAC_drv.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -435,7 +435,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
   {
     if (huart->RxEventType == HAL_UART_RXEVENT_IDLE)
     {
-      HAL_UART_Receive_IDLE(huart, &uart2_rx_buf, Size);
+      HAL_UART_Receive_IDLE(huart,&ys_transmit_2,Size);
 			
     }
 		
@@ -449,14 +449,14 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     //			HAL_UART_Transmit_DMA(huart,(void*)stTjCommAllInfo.pstTjTransmit->receive_buf,Size);
     //				  HAL_UARTEx_ReceiveToIdle_DMA(huart,(void*)stTjCommAllInfo.pstTjTransmit->receive_buf, 9);
     //}
-    HAL_UARTEx_ReceiveToIdle_DMA(huart, uart2_rx_buf.u8receive_data, TJ_DATA_RECV_LEN_MAX);
+    HAL_UARTEx_ReceiveToIdle_DMA(huart, ys_transmit_2.receive_buf, YS_DATA_LEN_MAXIMUM);
     __HAL_DMA_DISABLE_IT(huart2.hdmarx, DMA_IT_HT);
   }
   else if (huart->Instance == USART3)
   {
     if (huart->RxEventType == HAL_UART_RXEVENT_IDLE)
     {
-      HAL_UART_Receive_IDLE(huart,&uart3_rx_buf,Size);
+      HAL_UART_Receive_IDLE(huart,&ys_transmit_3,Size);
     }
     else if (huart->RxEventType == HAL_UART_RXEVENT_HT)
     {
@@ -464,14 +464,14 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     else if (huart->RxEventType == HAL_UART_RXEVENT_TC)
     {
     }
-		HAL_UARTEx_ReceiveToIdle_DMA(huart, uart3_rx_buf.u8receive_data, TJ_DATA_RECV_LEN_MAX);
+		HAL_UARTEx_ReceiveToIdle_DMA(huart, ys_transmit_3.receive_buf, YS_DATA_LEN_MAXIMUM);
     __HAL_DMA_DISABLE_IT(huart3.hdmarx, DMA_IT_HT);
   }
   else if (huart->Instance == UART4)
   {
     if (huart->RxEventType == HAL_UART_RXEVENT_IDLE)
     {
-      HAL_UART_Receive_IDLE(huart,&uart4_rx_buf,Size);
+      HAL_UART_Receive_IDLE(huart,&ys_transmit_4,Size);
     }
     else if (huart->RxEventType == HAL_UART_RXEVENT_HT)
     {
@@ -479,7 +479,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     else if (huart->RxEventType == HAL_UART_RXEVENT_TC)
     {
     }
-		HAL_UARTEx_ReceiveToIdle_DMA(huart, uart4_rx_buf.u8receive_data, TJ_DATA_RECV_LEN_MAX);
+		HAL_UARTEx_ReceiveToIdle_DMA(huart, ys_transmit_4.receive_buf, YS_DATA_LEN_MAXIMUM);
     __HAL_DMA_DISABLE_IT(huart4.hdmarx, DMA_IT_HT);
   }
   else if (huart->Instance == UART5)

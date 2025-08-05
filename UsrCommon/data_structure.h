@@ -42,7 +42,8 @@ extern osSemaphoreId_t UpperControlSemHandle; 		//上位机控制同步
 extern osEventFlagsId_t DecodeEventHandle; 				// 上位机通信解析事件
 extern osSemaphoreId_t TJ_UART_RX_SemHandle;    	//飞特舵机串口接口信号量
 // extern osSemaphoreId_t FT_ACK_SEMHandle;				//飞特数据返回信号量
-extern osSemaphoreId TJ_Trans_SemHandle;       		//天机电机串口时序信号量
+//extern osSemaphoreId TJ_Trans_SemHandle;       		//天机电机串口时序信号量
+extern osSemaphoreId YS_Trans_SemHandle;       		//瑞声电机串口时序信号量
 
 extern osMessageQueueId_t Can_RX_QueueHandle;
 extern osMessageQueueId_t Tip_Usart_QueueHandle;

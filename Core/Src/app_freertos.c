@@ -133,10 +133,10 @@ osSemaphoreId_t TJ_UART_RX_SemHandle;
 const osSemaphoreAttr_t TJ_UART_RX_Sem_attributes = {
   .name = "TJ_UART_RX_Sem"
 };
-/* Definitions for TJ_Trans_Sem */
-osSemaphoreId_t TJ_Trans_SemHandle;
-const osSemaphoreAttr_t TJ_Trans_Sem_attributes = {
-  .name = "TJ_Trans_Sem"
+/* Definitions for YS_Trans_Sem */
+osSemaphoreId_t YS_Trans_SemHandle;
+const osSemaphoreAttr_t YS_Trans_Sem_attributes = {
+  .name = "YS_Trans_Sem"
 };
 /* Definitions for DecodeEvent */
 osEventFlagsId_t DecodeEventHandle;
@@ -192,8 +192,8 @@ void MX_FREERTOS_Init(void) {
   /* creation of TJ_UART_RX_Sem */
   TJ_UART_RX_SemHandle = osSemaphoreNew(1, 1, &TJ_UART_RX_Sem_attributes);
 
-  /* creation of TJ_Trans_Sem */
-  TJ_Trans_SemHandle = osSemaphoreNew(1, 1, &TJ_Trans_Sem_attributes);
+  /* creation of YS_Trans_Sem */
+  YS_Trans_SemHandle = osSemaphoreNew(1, 1, &YS_Trans_Sem_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */

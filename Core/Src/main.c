@@ -79,14 +79,14 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+	//HAL_Delay(1000);
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-//	HAL_Delay(300);
+	
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */

@@ -36,6 +36,8 @@
 #include "HWK_touch_sensor_fml.h"
 #include "data_structure.h"
 #include "upper_can_comm_drv.h"
+#include "config.h"
+#include "parameter_fml.h"
 #define RETURN_POSITION (0x00000001 << 0) // 位置1
 #define RETURN_PRESS1 (0x00000001 << 1)		// 压力1
 // #define RETURN_PRESS2       (0x00000001<<2)			//压力2
@@ -67,6 +69,39 @@
 
 typedef enum
 {
+	NONE					 = 0,
+	HALF_GRAB		   = 1,
+	FINGER_CIRCLE  = 2,
+	HAND_CIRCLE	   = 3,
+	ELLIPSE  		   = 4,
+	TUTTING  		   = 5,
+	SIX      		   = 6,
+	SEVEN    		   = 7,
+	EIGHT    		   = 8,
+	NINE     		   = 9,
+	TEN      		   = 10,
+	ROCK					 = 11,
+	SCISSORS			 = 12,
+	PAPER    		   = 13,
+	PACK					 = 14,
+}HAND_ACTION_TYPE;
+	
+typedef struct
+{
+	HAND_ACTION_TYPE action_type;
+	HAND_ACTION_TYPE last_action_type;
+	uint8_t speed;						//轨迹规划速度
+	uint8_t amplitude;				//动作幅值
+	uint8_t number_of_turns;	//圈数
+	
+	uint8_t finger_num;				//单手指动作时指定的手指序号。部分指令用到
+	
+	bool action_end;					//动作执行完毕
+	
+}Hand_Action;
+
+typedef enum
+{
 	INVALID_COMM_INTERFACE = 0, // 无效的接口选择						|
 	COMM_485 = 1,								// 485接口									|
 	COMM_CAN = 2,								// can接口									|
@@ -81,110 +116,74 @@ typedef struct
 
 } Matrix_Size_u8;
 
+typedef struct
+{
+	uint8_t pitch_angle;						//手指根部弯曲
+	uint8_t roll_angle;							//手指横滚   
+	uint8_t speed_ref;							//速度控制
+	uint8_t over_current_th;				//过流设置
+	uint8_t clear_fault;						//清除错误
+	uint8_t rotor_lock_count_th;		//堵转事件检测次数判定阈值
+	uint8_t pitch_temperature;			//温度
+	uint8_t  roll_temperature;			//温度
+	
+	uint8_t pitch_current;					//温度
+	uint8_t  roll_current;					//温度
+			
+	uint8_t pitch_speed;						//温度
+	uint8_t  roll_speed;						//温度
+
+}Finger_Upper_Cmd;
+typedef struct
+{
+	uint8_t pitch_angle;
+	uint8_t yaw_angle;
+	uint8_t roll_angle;
+	uint8_t tip_angle;
+
+	uint8_t fault;
+	uint8_t speed;
+	uint8_t current;
+	uint8_t pitch_temperature;			//温度
+	uint8_t roll_temperature;				//温度  
+	
+	uint8_t pitch_current;					//电流
+	uint8_t  roll_current;					//电流
+	
+	uint8_t pitch_speed;						//速度
+	uint8_t  roll_speed;						//速度
+}Finger_Lower_Sta;
+
 // 为了照顾can传输的传输长度，此处数据类型都定义成uint8_t,在使用时进行单位转换
 typedef struct
 {
-	uint8_t joint_angle_1; // 每个手指的关节位置设定
-	uint8_t joint_angle_2;
-	uint8_t joint_angle_3;
-	uint8_t joint_angle_4;
-	uint8_t joint_angle_5;
-	uint8_t joint_angle_6;
-	
-
-	uint8_t pressure_1; // 每个指尖的压力设定
-	uint8_t pressure_2;
-	uint8_t pressure_3;
-	uint8_t pressure_4;
-	uint8_t pressure_5;
-	uint8_t pressure_6; // 每个指尖的压力设定
-
-
-	uint8_t speed_1;
-	uint8_t speed_2;
-	uint8_t speed_3;
-	uint8_t speed_4;
-	uint8_t speed_5;
-	uint8_t speed_6;
-
-
-	uint8_t acceleration_1; // 电机加速度
-	uint8_t acceleration_2;
-	uint8_t acceleration_3;
-	uint8_t acceleration_4;
-	uint8_t acceleration_5;
-	uint8_t acceleration_6;
-
-
-	bool press_calibration;			// 压力传感器校准，暂时不启用
-	uint8_t clear_fault;				// 对应位高电平有效，高电平清除故障,低六位对应六个电机的清除电流故障
-	Matrix_Size_u8 matrix_size; // 指尖传感器数据
-} Upper_Request;
+	Finger_Upper_Cmd thumb;
+	Finger_Upper_Cmd index;
+	Finger_Upper_Cmd middle;
+	Finger_Upper_Cmd ring;
+	Finger_Upper_Cmd little;	
+	Finger_Tip_Data_All *pTip_Data_All;
+	Hand_Action *pAction;
+	uint8_t matrix_sensor_index;
+	Matrix_Size_u8 matrix_size;
+}Upper_Request;
 
 // 为了照顾can传输的传输长度，此处数据类型都定义成uint8_t,提醒上位机在使用时进行单位转换
+//为了照顾can传输的传输长度，此处数据类型都定义成uint8_t,提醒上位机在使用时进行单位转换
 typedef struct
 {
-	uint8_t curr_joint_angle_1; // 手指的关节位置
-	uint8_t curr_joint_angle_2;
-	uint8_t curr_joint_angle_3;
-	uint8_t curr_joint_angle_4;
-	uint8_t curr_joint_angle_5;
-	uint8_t curr_joint_angle_6;
-
-
-	uint8_t curr_pressure_1; // 指尖的当前压力
-	uint8_t curr_pressure_2;
-	uint8_t curr_pressure_3;
-	uint8_t curr_pressure_4;
-	uint8_t curr_pressure_5;
-	uint8_t curr_pressure_6; // 指尖的当前压力
-
-
-	uint8_t current_speed_1;
-	uint8_t current_speed_2;
-	uint8_t current_speed_3;
-	uint8_t current_speed_4;
-	uint8_t current_speed_5;
-	uint8_t current_speed_6;
-
-
-	uint8_t curr_temp_1; // 温度传感器数据
-	uint8_t curr_temp_2; // 温度传感器数据
-	uint8_t curr_temp_3; // 温度传感器数据
-	uint8_t curr_temp_4; // 温度传感器数据
-	uint8_t curr_temp_5; // 温度传感器数据
-	uint8_t curr_temp_6; // 温度传感器数据
-
-
-	uint8_t curr_error_code_1; // 电机故障码
-	uint8_t curr_error_code_2; // 电机故障码
-	uint8_t curr_error_code_3; // 电机故障码
-	uint8_t curr_error_code_4; // 电机故障码
-	uint8_t curr_error_code_5; // 电机故障码
-	uint8_t curr_error_code_6; // 电机故障码
-
-
-	uint8_t curr_acceleration_1; // 电机加速度
-	uint8_t curr_acceleration_2; // 电机加速度
-	uint8_t curr_acceleration_3; // 电机加速度
-	uint8_t curr_acceleration_4; // 电机加速度
-	uint8_t curr_acceleration_5; // 电机加速度
-	uint8_t curr_acceleration_6; // 电机加速度
+	Finger_Lower_Sta thumb;
+	Finger_Lower_Sta index;
+	Finger_Lower_Sta middle;
+	Finger_Lower_Sta ring;
+	Finger_Lower_Sta little;
+	Finger_Tip_Data_All *pTip_Data_All;
+	Hand_Action *pAction;
 	
-	uint8_t current_mA_1;        //电流
-	uint8_t current_mA_2;  
-	uint8_t current_mA_3;
-	uint8_t current_mA_4;
-	uint8_t current_mA_5;
-	uint8_t current_mA_6;
-	
-
-	uint8_t is_force_calibration; // 压力传感器是否校准标志位
-	uint8_t fault_code;						// 故障码低六位分别是六个电机的过扭矩标志
-
 	HWK_Hand_Sensor *hwk_hand_sensor;
-	Matrix_Size_u8 matrix_size; // 指尖传感器数据
-} Lower_Response;
+	uint8_t matrix_sensor_index;
+	Matrix_Size_u8 matrix_size;
+}Lower_Response;
 // 协议的帧属性
 typedef enum
 {
@@ -211,7 +210,7 @@ typedef enum
 	Temp1 = 0x33,           //温度
 	Temp2 = 0x34,   				//电流
 
-	Error_Code1 = 0x35,
+	Error_Code1 = 0x35,  
 	Error_Code2 = 0x36,
 
 	Home_Rewrite = 0x38,
@@ -286,6 +285,7 @@ void event_can_dispose(void);
 void comm_can_touch_sensor_parser(Can_Rx_Queue *pRx_queue, Upper_Request *pRequest, Lower_Response *pResponse, Protocol_Aux_Data *aux_data);
 void comm_can_touch_sensor_send(Upper_Can_Transmit *can_trans, Lower_Response *pResponse, FRAME_PROPERTY frame_property);
 void event_can_tip_sensor_dispose(void);
+void init_request_data(Upper_Request *request,Lower_Response *pResponse);
 // void comm_modbus_touch_sensor_get(Modbus_485 *modbus, Lower_Response *pResponse, FRAME_PROPERTY frame_property);
 
 /******************************** END OF FILE *********************************/

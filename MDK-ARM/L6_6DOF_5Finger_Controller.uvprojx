@@ -656,16 +656,6 @@
           <GroupName>Usr/Driver</GroupName>
           <Files>
             <File>
-              <FileName>TJ_MotorDrive.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\UsrDrives\TJ_MotorDrive.h</FilePath>
-            </File>
-            <File>
-              <FileName>TJ_MotorDrive.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\UsrDrives\TJ_MotorDrive.c</FilePath>
-            </File>
-            <File>
               <FileName>HWK_touch_sensor_drv.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\UsrDrives\HWK_touch_sensor_drv.c</FilePath>
@@ -679,6 +669,11 @@
               <FileName>upper_can_comm_drv.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\UsrDrives\upper_can_comm_drv.c</FilePath>
+            </File>
+            <File>
+              <FileName>AAC_drv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\UsrDrives\AAC_drv.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -701,9 +696,9 @@
               <FilePath>..\UsrFML\upper_comm_protocol_fml.c</FilePath>
             </File>
             <File>
-              <FileName>TJ_Motor_Control_fml.c</FileName>
+              <FileName>AAC_MotorControl_fml.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\UsrFML\TJ_Motor_Control_fml.c</FilePath>
+              <FilePath>..\UsrFML\AAC_MotorControl_fml.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -774,6 +769,11 @@
               <FileName>data_structure.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\UsrCommon\data_structure.c</FilePath>
+            </File>
+            <File>
+              <FileName>config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\UsrCommon\config.c</FilePath>
             </File>
           </Files>
         </Group>

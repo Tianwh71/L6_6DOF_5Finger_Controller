@@ -89,35 +89,34 @@ uint8_t FDCAN2_Receive_Msg(uint8_t *buf, uint16_t *Identifier, uint16_t *len)
 // 用来保存接收数据端数据
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
+	uint32_t filllevel = 0;
 	static BaseType_t ret;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	if (HAL_FDCAN_GetRxFifoFillLevel(&hfdcan2, FDCAN_RX_FIFO0) != 0) // 接收队列不为0，有数据可读
+	if (HAL_FDCAN_GetRxFifoFillLevel(&hfdcan2, FDCAN_RX_FIFO0) != RESET) // 接收队列不为0，有数据可读
 	{
-
-		// 在此处理接收数据（如存入缓冲区）
-		upper_can_transmit.receive_len = FDCAN2_Receive_Msg(upper_can_transmit.receive_buf, &fdcan2_RxStruct.stdId, &fdcan2_RxStruct.length);
-		if (fdcan2_RxStruct.stdId == SELF_ID || fdcan2_RxStruct.stdId == 0xFF)
+		filllevel = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan2, FDCAN_RX_FIFO0);
+		for(int i = 0; i < filllevel; i++)
 		{
-			if (upper_can_transmit.receive_len != 0)
+			// 在此处理接收数据（如存入缓冲区）
+			upper_can_transmit.receive_len = FDCAN2_Receive_Msg(upper_can_transmit.receive_buf, &fdcan2_RxStruct.stdId, &fdcan2_RxStruct.length);
+			if (fdcan2_RxStruct.stdId == SELF_ID || fdcan2_RxStruct.stdId == 0xFF)
 			{
 				// /* 检查缓冲区是否已满 */
-				if (can_rx_buffer_count < CAN_RX_BUFFER_SIZE)
+				if (upper_can_transmit.receive_len != 0 && can_rx_buffer_count < CAN_RX_BUFFER_SIZE) 
 				{
 					upper_can_transmit.receive_flag=true;
-					/* 将接收到的CAN帧存储到缓冲区 */
-					// can_rx_buffer[can_rx_buffer_head].stdId = fdcan2_RxStruct.stdId;
-					// can_rx_buffer[can_rx_buffer_head].length = fdcan2_RxStruct.length;
-					// memcpy(can_rx_buffer[can_rx_buffer_head].data, fdcan2_RxStruct.data, fdcan2_RxStruct.length);
-					/* 更新缓冲区头指针和未处理消息数量 */
-					// can_rx_buffer_head = (can_rx_buffer_head + 1) % CAN_RX_BUFFER_SIZE;
-					// can_rx_buffer_count++;
-
 					// 将数据放到can接收队列中
 					memcpy(&can_rx_put_queue.receive_buf, upper_can_transmit.receive_buf, upper_can_transmit.receive_len);
 					can_rx_put_queue.receive_len = fdcan2_RxStruct.length;
 					can_rx_put_queue.receive_flag = true;
 					osMessageQueuePut (Can_RX_QueueHandle, &can_rx_put_queue, 0, 0);
 					ret = xEventGroupSetBitsFromISR(DecodeEventHandle, RX_CAN_EVENT, &xHigherPriorityTaskWoken); // 触发CAN接收到数据事件
+					/* 消息被成功发出 */
+					if( ret != pdFAIL )
+					{
+					/* 如果 xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+						portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+					}
 				}
 				else
 				{

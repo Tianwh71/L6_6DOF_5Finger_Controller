@@ -1,22 +1,25 @@
 
 #include "TaskMotorControl.h"
 #include "Common.h"
-#include "TJ_MotorDrive.h"
-#include "TJ_Motor_Control_fml.h"
-uint16_t target_position[7] = {1000, 2000, 2000, 2000, 2000, 2000, 1000};
+#include "AAC_drv.h"
+#include "AAC_MotorControl_fml.h"
 void MotorControlTaskFun(void *argument)
 {
-	 // 启动初始接收
-	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_rx_buf.u8receive_data, TJ_DATA_RECV_LEN_MAX);
-	HAL_UARTEx_ReceiveToIdle_DMA(&huart3, uart3_rx_buf.u8receive_data, TJ_DATA_RECV_LEN_MAX);
-  HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart4_rx_buf.u8receive_data, TJ_DATA_RECV_LEN_MAX);
-	stTjCommAllInfo.Tjtrans_block_mode = WAIT_SEM_NOP; // 设置为非阻塞模式
-	osDelay(1000);
+	static uint32_t ys_init_failure = 0;
+	// 启动初始接收
+	ys_usart_user_init();
 	//下发读取帧获取当前位置
-	//TJ_Init_Pos(tj_servo, &tj_control_data);
+	osDelay(2350);//该延时必须，飞特舵机实测上电后需要等待这么一段时间才能稳定读到电机数据，只有读到了电机位置，才不会影响位置回写功能//待定//不一定是时间问题
+	ys_init_failure = inspire_motor_init(&hand,&ys_actuator,inspire_comm,inspire_data);
+	/*更新电机角度到指令返回值*/
+  ys_set_status(&hand,inspire_data,&lower_response);
+	init_request_data(&upper_request,&lower_response);
 	for (;;)
 	{
-		TJ_Motor_Control(tj_servo, &tj_control_data); // 控制电机
+		hand_planner(&hand,&ys_actuator,&ys_cmd_all);
+		inspire_motor_control(&ys_actuator,inspire_comm,inspire_data);
+		//updata_hand_sta(&hand,&ys_actuator,&ys_sta_all);
+		//follow_mode_r(inspire_comm,1,1600);
 		osDelay(1);
 	}
 	/* USER CODE END MotorControlTaskFun */

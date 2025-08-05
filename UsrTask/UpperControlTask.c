@@ -33,7 +33,7 @@
 #include "upper_comm_protocol_fml.h"
 #include "upper_can_comm_drv.h"
 #include "data_structure.h"
-#include "TJ_Motor_Control_fml.h"
+#include "AAC_MotorControl_fml.h"
 
 /* USER CODE BEGIN Header_StartUpperControlTask */
 /**
@@ -54,7 +54,7 @@ void StartUpperControlTask(void *argument)
 
 		if (event_ret & RX_CAN_EVENT)
 		{
-			tj_set_status(tj_servo,&lower_response);
+			ys_set_status(&hand,inspire_data,&lower_response);
 			event_can_dispose();
 		}
 	}
