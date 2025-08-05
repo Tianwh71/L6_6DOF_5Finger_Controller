@@ -28,8 +28,8 @@
 #include "cmsis_os.h"
 #include "task.h"
 #include "upper_comm_protocol_fml.h"
-Inspire_Data inspire_data[YS_ID_MAXIMUM] = {0};
-YS_Cmd_All ys_cmd_all = 
+Inspire_Data inspire_data[RS_ID_MAXIMUM] = {0};
+RS_Cmd_All RS_Cmd_all = 
 {
 	.thumb_A	=
 	{
@@ -56,7 +56,7 @@ YS_Cmd_All ys_cmd_all =
 		.speed_step = DEFAULT_SPEED,
 	},
 };
-YS_Sta_All ys_sta_all;
+RS_Sta_All RS_Sta_all;
 YS_Oc_All ys_oc_all = 
 {
 	.thumb_A = 
@@ -102,45 +102,7 @@ YS_Oc_All ys_oc_all =
 	 .block = false,
 	},
 };
-YS_Oc2_All ys_oc2_all = 
-{
-	.thumb_A = 
-	{
-	 .en_forword = true,
-	 .en_backword = true,
-	 .block = false,
-	},
-	.thumb_B = 
-	{
-	 .en_forword = true,
-	 .en_backword = true,
-	 .block = false,
-	},
-	.index_A = 
-	{
-	 .en_forword = true,
-	 .en_backword = true,
-		.block = false,
-	},
-	.middle_A = 
-	{
-	 .en_forword = true,
-	 .en_backword = true,
-	 .block = false,
-	},
-	.ring_A = 
-	{
-	 .en_forword = true,
-	 .en_backword = true,
-	 .block = false,
-	},
-	.little_A = 
-	{
-	 .en_forword = true,
-	 .en_backword = true,
-	 .block = false,
-	},
-};
+
 YS_Motor_Control_Cycle_All ys_motor_control_cycle_all = 
 {
 		.thumb_A = 
@@ -168,13 +130,13 @@ YS_Motor_Control_Cycle_All ys_motor_control_cycle_all =
 	.timeout_interval = MOTOR_CONTROL_TIMEOUT_INTERVAL_YS,
 	},
 };
-YS_Actuator ys_actuator = 
+RS_Actuator rs_actuator = 
 {
 	/*大拇指弯曲*/
 	.thumb_A = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_1,
+		.id = RS_ID_1,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -191,10 +153,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.thumb_A,
-		.sta = &ys_sta_all.thumb_A,
+		.cmd = &RS_Cmd_all.thumb_A,
+		.sta = &RS_Sta_all.thumb_A,
 		.oc = &ys_oc_all.thumb_A,
-		.oc2 = &ys_oc2_all.thumb_A,
 		.motor_control_cycle = &ys_motor_control_cycle_all.thumb_A,
 		.speed_adj = 
 		{
@@ -205,7 +166,7 @@ YS_Actuator ys_actuator =
 	.thumb_B = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_6,
+		.id = RS_ID_6,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -222,10 +183,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.thumb_B,
-		.sta = &ys_sta_all.thumb_B,
+		.cmd = &RS_Cmd_all.thumb_B,
+		.sta = &RS_Sta_all.thumb_B,
 		.oc = &ys_oc_all.thumb_B,
-		.oc2 = &ys_oc2_all.thumb_B,
 		.motor_control_cycle = &ys_motor_control_cycle_all.thumb_B,
 		.speed_adj = 
 		{
@@ -236,7 +196,7 @@ YS_Actuator ys_actuator =
 	.index_A = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_2,
+		.id = RS_ID_2,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -253,10 +213,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.index_A,
-		.sta = &ys_sta_all.index_A,
+		.cmd = &RS_Cmd_all.index_A,
+		.sta = &RS_Sta_all.index_A,
 		.oc = &ys_oc_all.index_A,
-		.oc2 = &ys_oc2_all.index_A,
 		.motor_control_cycle = &ys_motor_control_cycle_all.index_A,
 		.speed_adj = 
 		{
@@ -267,7 +226,7 @@ YS_Actuator ys_actuator =
 		.middle_A = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_3,
+		.id = RS_ID_3,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -284,10 +243,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.middle_A,
-		.sta = &ys_sta_all.middle_A,
+		.cmd = &RS_Cmd_all.middle_A,
+		.sta = &RS_Sta_all.middle_A,
 		.oc = &ys_oc_all.middle_A,
-		.oc2 = &ys_oc2_all.middle_A,
 		.motor_control_cycle = &ys_motor_control_cycle_all.middle_A,
 		.speed_adj = 
 		{
@@ -298,7 +256,7 @@ YS_Actuator ys_actuator =
 		.ring_A = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_4,
+		.id = RS_ID_4,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -315,10 +273,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.ring_A,
-		.sta = &ys_sta_all.ring_A,
+		.cmd = &RS_Cmd_all.ring_A,
+		.sta = &RS_Sta_all.ring_A,
 		.oc = &ys_oc_all.ring_A,
-		.oc2 = &ys_oc2_all.ring_A,
 		.motor_control_cycle = &ys_motor_control_cycle_all.ring_A,
 		.speed_adj = 
 		{
@@ -329,7 +286,7 @@ YS_Actuator ys_actuator =
 		.little_A = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_5,
+		.id = RS_ID_5,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -346,10 +303,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.little_A,
-		.sta = &ys_sta_all.little_A,
+		.cmd = &RS_Cmd_all.little_A,
+		.sta = &RS_Sta_all.little_A,
 		.oc = &ys_oc_all.little_A,
-		.oc2 = &ys_oc2_all.little_A,
 		.motor_control_cycle = &ys_motor_control_cycle_all.little_A,
 		.speed_adj = 
 		{
@@ -359,7 +315,7 @@ YS_Actuator ys_actuator =
 		.reserve = 
 	{
 		.is_actuator_valid = true,
-		.id = YS_ID_MAXIMUM,
+		.id = RS_ID_MAXIMUM,
 		.is_actuator_online = true,
 		.en_control_freeze = false,
 		.pos_mode = RS_FOLLOW_MODE,
@@ -376,10 +332,9 @@ YS_Actuator ys_actuator =
 			.speed_max = SPEED_MIN*255,
 			.speed_min = SPEED_MIN,
 		},
-		.cmd = &ys_cmd_all.reserve,
-		.sta = &ys_sta_all.reserve,
+		.cmd = &RS_Cmd_all.reserve,
+		.sta = &RS_Sta_all.reserve,
 		.oc = &ys_oc_all.reserve,
-		.oc2 = &ys_oc2_all.reserve,
 		.motor_control_cycle = &ys_motor_control_cycle_all.reserve,
 		.speed_adj = 
 			{
@@ -396,8 +351,8 @@ Hand hand =
 	{
 		.finger_id = FINGER_THUMB,
 		.finger_type = FINGER_2M,
-		.actuator_A = &ys_actuator.thumb_A,	//绑定关节
-		.actuator_B = &ys_actuator.thumb_B,	//绑定关节
+		.actuator_A = &rs_actuator.thumb_A,	//绑定关节
+		.actuator_B = &rs_actuator.thumb_B,	//绑定关节
 		.at_fault_sta = false,
 		.pitch = 
 		{
@@ -435,8 +390,7 @@ Hand hand =
 	{	
 		.finger_id = FINGER_INDEX,
 		.finger_type = FINGER_1M,
-		.actuator_A = &ys_actuator.index_A,		//绑定关节
-		.pitch_dead_zone = PITCH_DEAD_ZONE,
+		.actuator_A = &rs_actuator.index_A,		//绑定关节
 		.at_fault_sta = false,
 		.pitch = 
 				{
@@ -464,8 +418,7 @@ Hand hand =
 	{	
 		.finger_id = FINGER_MIDDLE,
 		.finger_type = FINGER_1M,
-		.actuator_A = &ys_actuator.middle_A,		//绑定关节
-		.pitch_dead_zone = PITCH_DEAD_ZONE,
+		.actuator_A = &rs_actuator.middle_A,		//绑定关节
 		.at_fault_sta = false,
 		.pitch = 
 				{
@@ -493,8 +446,7 @@ Hand hand =
 	{	
 		.finger_id = FINGER_RING,
 		.finger_type = FINGER_1M,
-		.actuator_A = &ys_actuator.ring_A,		//绑定关节指根
-		.pitch_dead_zone = PITCH_DEAD_ZONE,
+		.actuator_A = &rs_actuator.ring_A,		//绑定关节指根
 		.at_fault_sta = false,
 		.pitch = 
 				{
@@ -522,8 +474,7 @@ Hand hand =
 	{	
 		.finger_id = FINGER_LITTLE,
 		.finger_type = FINGER_1M,
-		.actuator_A = &ys_actuator.little_A,		//绑定关节指根
-		.pitch_dead_zone = PITCH_DEAD_ZONE,
+		.actuator_A = &rs_actuator.little_A,		//绑定关节指根
 		.at_fault_sta = false,
 		.pitch = 
 		{
@@ -550,21 +501,21 @@ Hand hand =
 
 };
 
-uint8_t *temperature_cmd_map[YS_ID_MAXIMUM] = {
+uint8_t *temperature_cmd_map[RS_ID_MAXIMUM] = {
 	&hand.thumb. roll_temperature,  &hand.thumb.pitch_temperature, 
 	&hand.index. pitch_temperature, 
 	&hand.middle.pitch_temperature, 
 	&hand.ring.  pitch_temperature, 
 	&hand.little.pitch_temperature
 };
-uint8_t *current_cmd_map[YS_ID_MAXIMUM] = {
+uint8_t *current_cmd_map[RS_ID_MAXIMUM] = {
 	&hand.thumb.roll_current, 	  &hand.thumb.pitch_current,
 	&hand.index.pitch_current,
 	&hand.middle.pitch_current,
 	&hand.ring.pitch_current,
 	&hand.little.pitch_current
 };
-uint8_t *speed_cmd_map[YS_ID_MAXIMUM] = {
+uint8_t *speed_cmd_map[RS_ID_MAXIMUM] = {
 	&hand.thumb.roll_speed,    &hand.thumb.pitch_speed,
 	&hand.index.pitch_speed,
 	&hand.middle.pitch_speed,
@@ -573,7 +524,7 @@ uint8_t *speed_cmd_map[YS_ID_MAXIMUM] = {
 };
 
 //AAC电机协议解析
-bool inspire_motor_rx_decode(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
+bool inspire_motor_rx_decode(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
 {
 	bool ret;
 		switch(pComm->answer_frame->cmd_type)
@@ -598,15 +549,15 @@ bool inspire_motor_rx_decode(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_
 	}
 	return ret;
 }
-uint32_t inspire_motor_init(Hand *pHand,YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
+uint32_t inspire_motor_init(Hand *pHand,RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
 {
 	uint32_t ret;//按位返回每个电机是否初始化过程正常，在线
 	static uint16_t temp_pos_ref;
 	uint8_t write_table_data[2];
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
 	Finger *pFingle = (Finger *)&pHand->thumb;
 	Inspire_Comm *current_comm = NULL;
-	for(int i = YS_ID_1;i<YS_ID_MAXIMUM;i++)
+	for(int i = RS_ID_1;i<RS_ID_MAXIMUM;i++)
 	{
 		if(pActuator_unit[i-1].is_actuator_valid == false)
 		{
@@ -614,11 +565,11 @@ uint32_t inspire_motor_init(Hand *pHand,YS_Actuator *pActuator,Inspire_Comm *pCo
 			continue;
 		}
 		// 选择通道：0-串口2，1-串口3，2-串口4
-		if (i == YS_ID_1 || i == YS_ID_2)
+		if (i == RS_ID_1 || i == RS_ID_2)
 			current_comm = &pComm[0];  // 串口2
-		else if (i == YS_ID_3 || i == YS_ID_4)
+		else if (i == RS_ID_3 || i == RS_ID_4)
 			current_comm = &pComm[1];  // 串口3
-		else if (i == YS_ID_5 || i == YS_ID_6)
+		else if (i == RS_ID_5 || i == RS_ID_6)
 			current_comm = &pComm[2];  // 串口4
 		initLowPassFilter(&pActuator_unit[i-1].speed_step_real_filter,0.1);
 		init_Mean_Filter(&pActuator_unit[i-1].MCC_mean_filter,true,YS_MCC_FILTER_DEPTH);
@@ -688,7 +639,7 @@ uint32_t inspire_motor_init(Hand *pHand,YS_Actuator *pActuator,Inspire_Comm *pCo
 		osDelay(1);
 	}
 	//反算关节位置-根据当前电机的位置计算出当前关节的位置角度
-	updata_hand_sta(&hand,pActuator,&ys_sta_all);
+	updata_hand_sta(&hand,pActuator,&RS_Sta_all);
 	for(int i = 0;i<FINGER_ID_MAXIMUM-1;i++ )
 	{
 		switch(pFingle[i].finger_type)
@@ -713,11 +664,11 @@ uint32_t inspire_motor_init(Hand *pHand,YS_Actuator *pActuator,Inspire_Comm *pCo
 	}
 	return ret;
 }
-uint32_t over_current_detection(YS_Actuator *pActuator)
+uint32_t over_current_detection(RS_Actuator *pActuator)
 {
 	uint32_t ret;//按位返回每个电机是否初始化过程正常，在线
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
-	for(int i = YS_ID_1;i<YS_ID_MAXIMUM;i++)
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
+	for(int i = RS_ID_1;i<RS_ID_MAXIMUM;i++)
 	{
 		if(pActuator_unit[i-1].is_actuator_valid == false)
 		{
@@ -788,75 +739,20 @@ uint32_t over_current_detection(YS_Actuator *pActuator)
 	}
 	return ret;
 }
-uint32_t over_current_detection2(YS_Actuator *pActuator)//电机本身过流故障
-{
-	uint32_t ret;//按位返回每个电机是否初始化过程正常，在线
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
-	for(int i = YS_ID_1;i<YS_ID_MAXIMUM;i++)
-	{
-		if(pActuator_unit[i-1].is_actuator_valid == false)
-		{
-			ret |= (0x00000001<<(i-1));
-		}
-		if((pActuator_unit[i-1].oc2->en_forword == true)&&(pActuator_unit[i-1].oc2->en_backword == true))
-		{
-			if(((pActuator_unit[i-1].sta->fault_code>>OVER_CURRENT_BIT)&0x01)!=0)
-			{
-					if((pActuator_unit[i-1].cmd->position_ref - pActuator_unit[i-1].sta->current_position)>5)
-					{
-						pActuator_unit[i-1].oc2->en_forword = false;
-						
-					}else if((pActuator_unit[i-1].cmd->position_ref - pActuator_unit[i-1].sta->current_position)<-5)
-					{
-						pActuator_unit[i-1].oc2->en_backword = false;
-					}else
-					{
-						//死区
-					}
-			}else
-			{
-			}
-		}
-		else if((pActuator_unit[i-1].oc2->en_backword == true)||(pActuator_unit[i-1].oc2->en_forword == true))
-		{
-			if(((pActuator_unit[i-1].cmd->position_ref - pActuator_unit[i-1].sta->current_position)>5)&&(pActuator_unit[i-1].oc2->en_backword == false))
-			{
-				pActuator_unit[i-1].oc2->en_backword = true; 
-				pActuator_unit[i-1].cmd->clear_fault = true;
-			}
-			else if(((pActuator_unit[i-1].cmd->position_ref - pActuator_unit[i-1].sta->current_position)<-5)&&(pActuator_unit[i-1].oc2->en_forword == false))
-			{
-				pActuator_unit[i-1].oc2->en_forword = true;
-				pActuator_unit[i-1].cmd->clear_fault = true;
-			}
-			else if(ABS(pActuator_unit[i-1].cmd->position_ref - pActuator_unit[i-1].sta->current_position)<5)
-			{
-				pActuator_unit[i-1].oc2->en_backword = true; 
-				pActuator_unit[i-1].oc2->en_forword = true;
-				pActuator_unit[i-1].cmd->clear_fault = true;
-					
-			}
-		}
-		else
-		{
-		
-		}
-	}
-	return ret;
-}
+
 float temp_speed_step_max;
 uint16_t dec_range;
-uint32_t inspire_motor_control(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
+uint32_t inspire_motor_control(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
 {
 	uint32_t ret;//按位返回每个电机是否初始化过程正常，在线
 	float slope_position_f,speed_step;
 	int16_t position_ref;
 	uint8_t write_table_data[2];
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
 	Inspire_Comm * current_comm = NULL;
 	
 
-	for(int i = YS_ID_1;i<YS_ID_MAXIMUM;i++)
+	for(int i = RS_ID_1;i<RS_ID_MAXIMUM;i++)
 	{
 		if(pActuator_unit[i-1].is_actuator_valid == false)
 		{
@@ -864,11 +760,11 @@ uint32_t inspire_motor_control(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspir
 			continue;
 		}
 		// 选择通道：0-串口2，1-串口3，2-串口4
-		if (i == YS_ID_1 || i == YS_ID_2)
+		if (i == RS_ID_1 || i == RS_ID_2)
 			current_comm = &pComm[0];  // 串口2
-		else if (i == YS_ID_3 || i == YS_ID_4)
+		else if (i == RS_ID_3 || i == RS_ID_4)
 			current_comm = &pComm[1];  // 串口3
-		else if (i == YS_ID_5 || i == YS_ID_6)
+		else if (i == RS_ID_5 || i == RS_ID_6)
 			current_comm = &pComm[2];  // 串口4
 //		if(pActuator_unit[i-1].cmd->over_current_th_ref != pActuator_unit[i-1].cmd->last_over_current_th_ref)
 //		{
@@ -901,16 +797,6 @@ uint32_t inspire_motor_control(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspir
 //				pActuator_unit[i-1].cmd->slope_position_f = pActuator_unit[i-1].cmd->position_ref_real;
 				}
 		}
-		if((pActuator_unit[i-1].oc2->en_forword == true)&&(pActuator_unit[i-1].oc2->en_backword == true))//没有过流
-		{
-//				pActuator_unit[i-1].cmd->position_ref_real = CONSTRAIN(pActuator_unit[i-1].cmd->position_ref,pActuator_unit[i-1].init.pos_limit_max,pActuator_unit[i-1].init.pos_limit_min);
-				pActuator_unit[i-1].oc2->block = false;
-		}else if(((pActuator_unit[i-1].oc->en_backword == true)||(pActuator_unit[i-1].oc2->en_forword == true))&&(pActuator_unit[i-1].oc2->block == false))//过流
-		{
-				pActuator_unit[i-1].cmd->position_ref_real = pActuator_unit[i-1].sta->current_position;
-				pActuator_unit[i-1].cmd->slope_position_f = pActuator_unit[i-1].cmd->position_ref_real;
-//				pActuator_unit[i-1].oc2->block = true;
-		}
 		position_ref = pActuator_unit[i-1].cmd->position_ref_real;
 		if(pActuator_unit[i-1].pos_mode == RS_FOLLOW_MODE)
 		{
@@ -923,11 +809,11 @@ uint32_t inspire_motor_control(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspir
 	return true;
 }
 /*把电机的状态数据更新到推杆执行器中存储*/
-bool updata_motor_sta(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
+bool updata_motor_sta(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
 {
 	uint16_t l_u16MotorMaxPos = 0;
 	
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
 	pActuator_unit[pComm->answer_frame->id-1].sta->last_position = pActuator_unit[pComm->answer_frame->id-1].sta->current_position;//保存上一次位置值
 	
 	l_u16MotorMaxPos = pActuator_unit[pComm->answer_frame->id-1].init.pos_limit_max;
@@ -948,11 +834,11 @@ bool updata_motor_sta(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *p
 	return true;
 }
 
-uint32_t clear_fault(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
+uint32_t clear_fault(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pInspire_data)
 {
 	uint32_t ret;//按位返回每个电机是否清除过故障
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
-	for(int i = YS_ID_1;i<YS_ID_MAXIMUM;i++)
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
+	for(int i = RS_ID_1;i<RS_ID_MAXIMUM;i++)
 	{
 		if(pActuator_unit[i-1].cmd->clear_fault == true)
 		{
@@ -968,13 +854,13 @@ uint32_t clear_fault(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *pI
 	return ret;
 }
 
-bool hand_init(Hand *pHand,YS_Actuator *pActuator,YS_Cmd_All *pCmd)
+bool hand_init(Hand *pHand,RS_Actuator *pActuator,RS_Cmd_All *pCmd)
 {
 	/*通过推杆位置反算手指位置，回写手指角度*/
 
 	return true;
 }
-bool hand_planner(Hand *pHand,YS_Actuator *pActuator,YS_Cmd_All *pCommand)
+bool hand_planner(Hand *pHand,RS_Actuator *pActuator,RS_Cmd_All *pCommand)
 {
 	Finger *pFingle = (Finger *)&pHand->thumb;
 	static float pitch_angle,roll_angle;
@@ -1056,7 +942,7 @@ bool hand_planner(Hand *pHand,YS_Actuator *pActuator,YS_Cmd_All *pCommand)
 	return true;
 }
 
-bool updata_hand_sta(Hand *pHand,YS_Actuator *pActuator,YS_Sta_All *pSta)
+bool updata_hand_sta(Hand *pHand,RS_Actuator *pActuator,RS_Sta_All *pSta)
 {
 /*变量定义及初始化区开始*/
 	uint8_t motor_move_count;
@@ -1137,11 +1023,11 @@ bool updata_hand_sta(Hand *pHand,YS_Actuator *pActuator,YS_Sta_All *pSta)
 	}
 	return true;
 }
-void ys_get_cmd(Hand *pHand,YS_Actuator *pActuator,Upper_Request *pRequest,Protocol_Aux_Data *aux_data)
+void ys_get_cmd(Hand *pHand,RS_Actuator *pActuator,Upper_Request *pRequest,Protocol_Aux_Data *aux_data)
 {
 	Finger *pFingle = (Finger *)&pHand->thumb;
 	Finger_Upper_Cmd *pFinger_cmd = (Finger_Upper_Cmd*) pRequest;
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
 	static float pitch_angle,roll_angle;
   //if(aux_data->cmd_is_valid == true)
 	{
@@ -1205,7 +1091,7 @@ void ys_get_cmd(Hand *pHand,YS_Actuator *pActuator,Upper_Request *pRequest,Proto
 void ys_set_status(Hand *pHand,Inspire_Data *pInspre ,Lower_Response *lower_response)
 {
 	Finger *pFingle = (Finger *)&pHand->thumb;
-	YS_Actuator_Unit *actuator = NULL;
+	RS_Actuator_Unit *actuator = NULL;
 	UNUSED(pFingle);
 	Finger_Lower_Sta *pSta = (Finger_Lower_Sta *)&lower_response->thumb;
 
@@ -1225,8 +1111,6 @@ void ys_set_status(Hand *pHand,Inspire_Data *pInspre ,Lower_Response *lower_resp
 				case FINGER_2M:
 				{
 					pSta[i].pitch_angle = (pFingle[i].pitch.angle_max - pFingle[i].pitch.angle)*255/(pFingle[i].pitch.angle_max - pFingle[i].pitch.angle_min);
-//					pSta[i].pitch_temperature = pFingle[i].sta.pitch_temperature;
-//					pSta[i].tip_temperature = pFingle[i].sta.tip_temperature;
 					actuator = pFingle[i].actuator_A;
 					pSta[i].pitch_speed = float_2_u8(actuator->sta->speed,actuator->init.speed_max,actuator->init.speed_min,255,0,false);
 					pSta[i].pitch_current = float_2_u8(actuator->sta->current,actuator->init.current_max,0,255,0,false);
@@ -1249,10 +1133,10 @@ void ys_set_status(Hand *pHand,Inspire_Data *pInspre ,Lower_Response *lower_resp
 }
 
 //手部控制及电机控制超时检测
-void hand_control_timeout_detection(Hand *pHand,YS_Actuator *pActuator)
+void hand_control_timeout_detection(Hand *pHand,RS_Actuator *pActuator)
 {
 	Finger *pFingle = (Finger *)&pHand->thumb;
-	YS_Actuator_Unit *pActuator_unit = (YS_Actuator_Unit*) pActuator;
+	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
 	Time_Stamp* pTime_Stamp;
 	for(int i =0;i<FINGER_ID_MAXIMUM-1;i++)
 	{
@@ -1263,7 +1147,7 @@ void hand_control_timeout_detection(Hand *pHand,YS_Actuator *pActuator)
 		//timeout_detection(pTime_Stamp);
 		//timeout_detection(pTime_Stamp);
 	}
-	for(int i = YS_ID_1;i<YS_ID_MAXIMUM;i++)
+	for(int i = RS_ID_1;i<RS_ID_MAXIMUM;i++)
 	{
 		if(pActuator_unit[i-1].is_actuator_valid == true)
 		{
@@ -1281,7 +1165,7 @@ void hand_control_timeout_detection(Hand *pHand,YS_Actuator *pActuator)
   pos	uint16_t	        当前目标位置
   last_pos		          上一次的目标位置
 */
-float speed_step_adjust(Finger *pFingle,YS_Actuator_Unit *actuator,Time_Stamp *cmd_cycle,Time_Stamp *motor_control_cycle,uint16_t pos,uint16_t last_pos)
+float speed_step_adjust(Finger *pFingle,RS_Actuator_Unit *actuator,Time_Stamp *cmd_cycle,Time_Stamp *motor_control_cycle,uint16_t pos,uint16_t last_pos)
 {
 	Speed_Adjustment_ys *speed_adj = &actuator->speed_adj;
 	float temp_adj_speed_step = 0;

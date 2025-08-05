@@ -73,28 +73,12 @@
 //手指默认速度定义//
 #define DEFAULT_SPEED (150*SPEED_MIN)     
 
-/*12手指运动角度定义*/
-/*
-tip可达最大区域
-|
-|_____________
-|							\
-|							 \ ----->死区
-|								\
-|								 |
-|________________|_____________>pitch
-             |
-					TIP_DEAD_ZONE	
-关联变量 TIP_DEAD_ZONE
-*/
-
 /******************************************手指过流阈值定义**************************/
 #define PITCH_ANGLE_MAX 			90.0
 #define PITCH_ANGLE_MIN 			0.0
 #define PITCH_POS_MIN			 	0 
 
 /******************************************手指运动角度******************************/
-#define PITCH_DEAD_ZONE      0.50
 
 
 //转换系数 
@@ -128,20 +112,20 @@ tip可达最大区域
 /*参数定义区域结束*/
 typedef enum
 {
-	INVALID_YS_ID = 0,
-	YS_ID_1 = 1,
-	YS_ID_2 = 2,
-	YS_ID_3 = 3,
-	YS_ID_4 = 4,
-	YS_ID_5 = 5,
-	YS_ID_6 = 6,
-	YS_ID_MAXIMUM,
-}YS_ACTUATOR_ID;
+	INVALID_RS_ID = 0,
+	RS_ID_1 = 1,
+	RS_ID_2 = 2,
+	RS_ID_3 = 3,
+	RS_ID_4 = 4,
+	RS_ID_5 = 5,
+	RS_ID_6 = 6,
+	RS_ID_MAXIMUM,
+}RS_ACTUATOR_ID;
 /*位置控制模式*/
 typedef enum
 {
-	YS_INVALID_POSITION_MODE = 0,
-	YS_POSITION_MODE = 1,						//位置模式
+	RS_INVALID_POSITION_MODE = 0,
+	RS_POSITION_MODE = 1,						//位置模式
 	RS_FOLLOW_MODE = 2							//跟随模式
 }POSITIN_CONTROL_MODE;	
 
@@ -158,7 +142,7 @@ typedef struct
 	uint16_t current_min;				//过流保护最小值
 	float speed_max;						//斜坡控速最大
 	float speed_min;						//斜坡控速最小			
-}YS_init;	
+}RS_init;	
 
 /*指令*/
 typedef struct
@@ -176,7 +160,8 @@ typedef struct
 	
 	uint8_t follow_pos_sync_con;				//位置跟随模式控制
 	uint8_t control_mode;								//控制模式，0：位置模式，1：跟随模式
-}YS_Cmd;
+}RS_Cmd;
+
 typedef enum
 {
 	LOOCKED_ROTOR_BIT = 0,		     //电机堵转
@@ -187,7 +172,7 @@ typedef enum
 	CURRENT_ABNORMAL_BIT=4,        //电流自检异常
 	POS_CHECK_ABNORMAL_BIT =5,     //位置自检异常
 	SOFT_OVER_CURRENT_BIT = 6,		 //软件判断过流
-}YS_Fault_Code_Bit;
+}RS_Fault_Code_Bit;
 
 /*状态，反馈数据*/
 typedef struct
@@ -198,7 +183,7 @@ typedef struct
 	uint8_t fault_code;					//错误码。向外反馈
 	int16_t speed;							//增量计算出的速度
 	int8_t temperature;					//温度
-}YS_Sta;
+}RS_Sta;
 /*过流检测*/
 typedef struct
 {
@@ -211,13 +196,8 @@ typedef struct
 	bool en_backword;								//允许反向运动
 	bool block;											//已经处于过流停机状态，该标志位置起不再判断过流
 	uint16_t ov_position;						//过流位置
-}YS_OC_Detection;
-typedef struct
-{
-	bool en_forword;								//允许正向运动
-	bool en_backword;								//允许反向运动
-	bool block;											//已经处于过流停机状态，该标志位置起不再判断过流
-}YS_OC2_Detection;
+}RS_OC_Detection;
+
 typedef struct
 {
 	//两种思路
@@ -229,7 +209,7 @@ typedef struct
 	uint16_t motor_pos_real;					//考虑返回滞后性的当前tip电机值
 	float control_cycle_ratio;
 	bool slacken_flag;									//降速标志
-	int16_t pos_inc;									//指尖位置增量
+	int16_t pos_inc;									//手指位置增量
 	float cmd_inc_speed_step;					//本次位置指令与上次位置指令的差计算得到的速度
 	float cmd_cur_pos_speed_step;			//本次位置指令与当前位置的差计算得到的速度
 	
@@ -238,81 +218,70 @@ typedef struct
 }Speed_Adjustment_ys;
 
 
-/*因时推杆电机*/
+/*瑞声推杆电机*/
 typedef struct
 {
 	bool is_actuator_valid;					//电机有效性设置				
-	YS_ACTUATOR_ID id;							//电机id
+	RS_ACTUATOR_ID id;							//电机id
 	bool is_actuator_online;				//电机通信层面是否在线
 	bool en_control_freeze;					//是否开启控制冻结功能，指令没有变化的话，不去控制电机，减少指令帧数量，节省时间
 	POSITIN_CONTROL_MODE pos_mode; 	//电机位置控制模式
-	YS_init init;										//初始化
-	YS_Cmd *cmd;										//命令
-	YS_Sta *sta;										//状态
-	YS_OC_Detection *oc;						//过流
-	YS_OC2_Detection *oc2;						//过流
+	RS_init init;										//初始化
+	RS_Cmd *cmd;										//命令
+	RS_Sta *sta;										//状态
+	RS_OC_Detection *oc;						//过流
 	Time_Stamp *motor_control_cycle;	//电机控制周期
 	LowPassFilter speed_step_real_filter;
 	Mean_Filter MCC_mean_filter;					//电机控制周期滤波器	
 	Speed_Adjustment_ys speed_adj;
 	float mean_cmd_time_interval;
 	Mean_Filter speed_mean_filter;
-}YS_Actuator_Unit;
+}RS_Actuator_Unit;
 /*
-大拇指由四个因时推杆控制，控制指尖的定为A，控制根部的定为B，控制yaw和roll的差分对为C和D
-其它手指均由3个因时推杆控制，从大拇指方向向手托方向依次定位ABC,B负责指尖的控制，控制pitch和yaw的差分对电机为A和C
+大拇指由两个瑞声推杆控制，控制指根的定为A，控制yaw的定为B
 */
 typedef struct
 {
-	YS_Actuator_Unit thumb_A; 
-	YS_Actuator_Unit index_A;
-	YS_Actuator_Unit middle_A;
-	YS_Actuator_Unit ring_A;
-	YS_Actuator_Unit little_A; 
-	YS_Actuator_Unit thumb_B;
-	YS_Actuator_Unit reserve;
-}YS_Actuator;
+	RS_Actuator_Unit thumb_A; 
+	RS_Actuator_Unit index_A;
+	RS_Actuator_Unit middle_A;
+	RS_Actuator_Unit ring_A;
+	RS_Actuator_Unit little_A; 
+	RS_Actuator_Unit thumb_B;
+	RS_Actuator_Unit reserve;
+}RS_Actuator;
 //控制指令
 typedef struct
 {
-	YS_Cmd thumb_A;
-	YS_Cmd index_A;
-	YS_Cmd middle_A;
-	YS_Cmd ring_A;
-	YS_Cmd little_A;
-	YS_Cmd thumb_B;
-	YS_Cmd reserve;
-}YS_Cmd_All;
+	RS_Cmd thumb_A;
+	RS_Cmd index_A;
+	RS_Cmd middle_A;
+	RS_Cmd ring_A;
+	RS_Cmd little_A;
+	RS_Cmd thumb_B;
+	RS_Cmd reserve;
+}RS_Cmd_All;
 typedef struct
 {
-	YS_OC_Detection thumb_A;
-	YS_OC_Detection index_A;
-	YS_OC_Detection middle_A;
-	YS_OC_Detection ring_A;
-	YS_OC_Detection little_A;
-	YS_OC_Detection thumb_B;
-	YS_OC_Detection reserve;
+	RS_OC_Detection thumb_A;
+	RS_OC_Detection index_A;
+	RS_OC_Detection middle_A;
+	RS_OC_Detection ring_A;
+	RS_OC_Detection little_A;
+	RS_OC_Detection thumb_B;
+	RS_OC_Detection reserve;
 }YS_Oc_All;
+
 typedef struct
 {
-	YS_OC2_Detection thumb_A;
-	YS_OC2_Detection index_A;
-	YS_OC2_Detection middle_A;
-	YS_OC2_Detection ring_A;
-	YS_OC2_Detection little_A;
-	YS_OC2_Detection thumb_B;
-	YS_OC2_Detection reserve;
-}YS_Oc2_All;
-typedef struct
-{
-	YS_Sta thumb_A;
-	YS_Sta index_A;
-	YS_Sta middle_A;
-	YS_Sta ring_A;
-	YS_Sta little_A;
-	YS_Sta thumb_B;
-	YS_Sta reserve;
-}YS_Sta_All;
+	RS_Sta thumb_A;
+	RS_Sta index_A;
+	RS_Sta middle_A;
+	RS_Sta ring_A;
+	RS_Sta little_A;
+	RS_Sta thumb_B;
+	RS_Sta reserve;
+}RS_Sta_All;
 
 typedef struct
 {
@@ -379,8 +348,8 @@ typedef struct
 {
 	FINGER_ID finger_id;
 	FINGER_TYPE finger_type;
-	YS_Actuator_Unit *actuator_A;		//绑定关节 手指与执行器（电机）进行绑定
-	YS_Actuator_Unit *actuator_B;		//绑定关节
+	RS_Actuator_Unit *actuator_A;		//绑定关节 手指与执行器（电机）进行绑定
+	RS_Actuator_Unit *actuator_B;		//绑定关节
 	Finger_Angle_Sta sta;						//手指角度状态
 	uint16_t mean_value;
 	int16_t difference_value;
@@ -409,14 +378,9 @@ typedef struct
 	uint8_t pitch_current;
 	uint8_t  roll_current;
 	
-	float pitch_duty;								//用于指尖在指根伸直时限制弯曲程度
-	
-	float pitch_dead_zone;					//用于指根在指尖弯曲时限制伸直程度
-	
 	bool at_fault_sta;							//用于控制弯曲和侧摆的差分对发生了故障
 	
 }Finger;
-
 
 typedef struct
 {
@@ -427,27 +391,26 @@ typedef struct
 	Finger little;
 }Hand;
 
-extern Inspire_Data inspire_data[YS_ID_MAXIMUM];
-extern YS_Actuator ys_actuator;
-extern YS_Cmd_All ys_cmd_all;
-extern YS_Sta_All ys_sta_all;
-extern YS_Oc2_All ys_oc2_all;
+extern Inspire_Data inspire_data[RS_ID_MAXIMUM];
+extern RS_Actuator rs_actuator;
+extern RS_Cmd_All RS_Cmd_all;
+extern RS_Sta_All RS_Sta_all;
 extern YS_Motor_Control_Cycle_All ys_motor_control_cycle_all;
 extern Hand hand;
 
-bool inspire_motor_rx_decode(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
-uint32_t inspire_motor_init(Hand *pHand,YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
-uint32_t inspire_motor_control(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
-uint32_t over_current_detection(YS_Actuator *pActuator);
-uint32_t over_current_detection2(YS_Actuator *pActuator);
-bool updata_motor_sta(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
-uint32_t clear_fault(YS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
-bool hand_planner(Hand *pHand,YS_Actuator *pActuator,YS_Cmd_All *pCmd);
-void ys_get_cmd(Hand *pHand,YS_Actuator *pActuator,Upper_Request *pRequest,Protocol_Aux_Data *aux_data);
+bool inspire_motor_rx_decode(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
+uint32_t inspire_motor_init(Hand *pHand,RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
+uint32_t inspire_motor_control(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
+uint32_t over_current_detection(RS_Actuator *pActuator);
+uint32_t over_current_detection2(RS_Actuator *pActuator);
+bool updata_motor_sta(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
+uint32_t clear_fault(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspire_Data *inspire_data);
+bool hand_planner(Hand *pHand,RS_Actuator *pActuator,RS_Cmd_All *pCmd);
+void ys_get_cmd(Hand *pHand,RS_Actuator *pActuator,Upper_Request *pRequest,Protocol_Aux_Data *aux_data);
 void ys_set_status(Hand *pHand,Inspire_Data *pInspre ,Lower_Response *lower_response);
-bool updata_hand_sta(Hand *pHand,YS_Actuator *pActuator,YS_Sta_All *pSta);
-void hand_control_timeout_detection(Hand *pHand,YS_Actuator *pActuator);
-float speed_step_adjust(Finger *pFingle,YS_Actuator_Unit *actuator,Time_Stamp *cmd_cycle,Time_Stamp *motor_control_cycle,uint16_t angle_pos,uint16_t last_pos);
+bool updata_hand_sta(Hand *pHand,RS_Actuator *pActuator,RS_Sta_All *pSta);
+void hand_control_timeout_detection(Hand *pHand,RS_Actuator *pActuator);
+float speed_step_adjust(Finger *pFingle,RS_Actuator_Unit *actuator,Time_Stamp *cmd_cycle,Time_Stamp *motor_control_cycle,uint16_t angle_pos,uint16_t last_pos);
 #endif
 
 

@@ -281,7 +281,7 @@ void event_can_dispose(void)
 	comm_can_parser(&upper_can_transmit, &upper_request, &protocol_aux_data); // can解析
 	// comm_can_touch_sensor_parser(&can_rx_get_queue, &upper_request, &lower_response, &protocol_aux_data);
 	/*飞特*/
-	ys_get_cmd(&hand,&ys_actuator,&upper_request,&protocol_aux_data);
+	ys_get_cmd(&hand,&rs_actuator,&upper_request,&protocol_aux_data);
 	// 在发送之前准备好数据
 	if (protocol_aux_data.return_frame_makers & RETURN_POSITION)
 	{

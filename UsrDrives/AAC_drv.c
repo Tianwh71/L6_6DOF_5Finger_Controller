@@ -208,15 +208,15 @@ bool build_ins_frame(Inspire_Comm *pComm	,	uint8_t id	,	CMD_TYPE cmd_type	,	MEMO
 	
 	//获取信号量
 	pComm->ys_transmit->send_en_flag = true;
-	if(id == YS_ID_1 || id == YS_ID_2)
+	if(id == RS_ID_1 || id == RS_ID_2)
 	{
 		HAL_UART_Transmit_DMA(&huart2,(void*)pComm->ys_transmit->send_buf,pComm->ys_transmit->send_len);
 	}
-	else if(id == YS_ID_3 || id == YS_ID_4)
+	else if(id == RS_ID_3 || id == RS_ID_4)
 	{
 		HAL_UART_Transmit_DMA(&huart3,(void*)pComm->ys_transmit->send_buf,pComm->ys_transmit->send_len);
 	}
-	else if(id == YS_ID_5 || id == YS_ID_6)
+	else if(id == RS_ID_5 || id == RS_ID_6)
 	{
 		HAL_UART_Transmit_DMA(&huart4,(void*)pComm->ys_transmit->send_buf,pComm->ys_transmit->send_len);
 	}

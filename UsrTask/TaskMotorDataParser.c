@@ -27,7 +27,7 @@ void MotorDataParserTaskFun(void *argument)
 				{
 					
 						AccMotorRecvCount++;
-						inspire_motor_rx_decode(&ys_actuator,&inspire_comm[0],inspire_data);
+						inspire_motor_rx_decode(&rs_actuator,&inspire_comm[0],inspire_data);
 				}
 				ys_transmit_2.receive_flag = false;
 				memset((void *)ys_transmit_2.receive_buf,0,YS_TRANSMIT_LEN_MAXIMUM);
@@ -47,7 +47,7 @@ void MotorDataParserTaskFun(void *argument)
 				{
 					
 						AccMotorRecvCount++;
-						inspire_motor_rx_decode(&ys_actuator,&inspire_comm[1],inspire_data);
+						inspire_motor_rx_decode(&rs_actuator,&inspire_comm[1],inspire_data);
 				}
 				ys_transmit_2.receive_flag = false;
 				memset((void *)ys_transmit_2.receive_buf,0,YS_TRANSMIT_LEN_MAXIMUM);
@@ -66,7 +66,7 @@ void MotorDataParserTaskFun(void *argument)
 				if(decode_ans_frame(&inspire_comm[2]) == true)
 				{
 						AccMotorRecvCount++;
-						inspire_motor_rx_decode(&ys_actuator,&inspire_comm[2],inspire_data);
+						inspire_motor_rx_decode(&rs_actuator,&inspire_comm[2],inspire_data);
 				}
 				ys_transmit_2.receive_flag = false;
 				memset((void *)ys_transmit_2.receive_buf,0,YS_TRANSMIT_LEN_MAXIMUM);
