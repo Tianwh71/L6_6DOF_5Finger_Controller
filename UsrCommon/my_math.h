@@ -33,7 +33,6 @@
 #include "stdint.h"
 #include "stdbool.h"
 #include "math.h"
-
 /**
   * @brief  Macro to compute logarithm of two
   */

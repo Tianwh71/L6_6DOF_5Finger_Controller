@@ -34,26 +34,32 @@ RS_Cmd_All RS_Cmd_all =
 	.thumb_A	=
 	{
 		.speed_step = DEFAULT_SPEED,
+		.control_mode = POS_SYNC_FOLLOW_MODE,
 	},
 	.thumb_B  =
 	{
 		.speed_step = DEFAULT_SPEED,
+		.control_mode = POS_SYNC_FOLLOW_MODE,
 	},
 	.index_A  =
 	{
 		.speed_step = DEFAULT_SPEED,
+		.control_mode = POS_SYNC_FOLLOW_MODE,
 	},
 	.middle_A =
 	{
 		.speed_step = DEFAULT_SPEED,
+		.control_mode = POS_SYNC_FOLLOW_MODE,
 	},
 	.ring_A   =
 	{
 		.speed_step = DEFAULT_SPEED,
+		.control_mode = POS_SYNC_FOLLOW_MODE,
 	},
 	.little_A =
 	{
 		.speed_step = DEFAULT_SPEED,
+		.control_mode = POS_SYNC_FOLLOW_MODE,
 	},
 };
 RS_Sta_All RS_Sta_all;
@@ -301,7 +307,7 @@ RS_Actuator rs_actuator =
 			.current_max = OVER_CURRENT_TH_MAX,
 			.current_min = OVER_CURRENT_TH_MIN,
 			.speed_max = SPEED_MIN*255,
-			.speed_min = SPEED_MIN,
+			.speed_min = SPEED_MIN*5,  //电机最小速度是5
 		},
 		.cmd = &RS_Cmd_all.little_A,
 		.sta = &RS_Sta_all.little_A,
@@ -349,10 +355,7 @@ Hand hand =
 {
 	.thumb = 
 	{
-		.finger_id = FINGER_THUMB,
-		.finger_type = FINGER_2M,
-		.actuator_A = &rs_actuator.thumb_A,	//绑定关节
-		.actuator_B = &rs_actuator.thumb_B,	//绑定关节
+		.actuator = &rs_actuator.thumb_A,	//绑定关节
 		.at_fault_sta = false,
 		.pitch = 
 		{
@@ -362,25 +365,12 @@ Hand hand =
 			.angle_min= PITCH_ANGLE_MIN,
 		  .pos_min = PITCH_POS_MIN,
 		},
-		.roll = 
-		{
-		.angle = (ROLL_ANGLE_MAX+ROLL_ANGLE_MIN)/2,
-		.dir_flip = true,
-		.angle_max= ROLL_ANGLE_MAX,
-		.angle_min= ROLL_ANGLE_MIN,
-		.pos_min = ROLL_POS_MIN,
-		},
 		.pitch_cmd_cycle = 
 		{
 			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
 		},
-		.roll_cmd_cycle=
-		{
-			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
-		},
-		.speed =(DEFAULT_SPEED/SPEED_MIN),	//速度控制预设值单位转换
-		.pitch_speed =(DEFAULT_SPEED/SPEED_MIN),
-		.roll_speed =(DEFAULT_SPEED/SPEED_MIN),
+		.speed =DEFAULT_SPEED,	//速度控制预设值单位转换
+		.pitch_speed =DEFAULT_SPEED,
 		
 	  .current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.pitch_current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
@@ -388,9 +378,7 @@ Hand hand =
 	},
 	.index =
 	{	
-		.finger_id = FINGER_INDEX,
-		.finger_type = FINGER_1M,
-		.actuator_A = &rs_actuator.index_A,		//绑定关节
+		.actuator = &rs_actuator.index_A,		//绑定关节
 		.at_fault_sta = false,
 		.pitch = 
 				{
@@ -404,21 +392,15 @@ Hand hand =
 		{
 			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
 		},
-		.roll_cmd_cycle=
-		{
-			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
-		},
-		.speed =(DEFAULT_SPEED/SPEED_MIN),	//速度控制预设值单位转换
-		.pitch_speed =(DEFAULT_SPEED/SPEED_MIN),
+		.speed =DEFAULT_SPEED,	//速度控制预设值单位转换
+		.pitch_speed =DEFAULT_SPEED,
 		.current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.pitch_current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
 	},
 		.middle =
 	{	
-		.finger_id = FINGER_MIDDLE,
-		.finger_type = FINGER_1M,
-		.actuator_A = &rs_actuator.middle_A,		//绑定关节
+		.actuator = &rs_actuator.middle_A,		//绑定关节
 		.at_fault_sta = false,
 		.pitch = 
 				{
@@ -432,21 +414,15 @@ Hand hand =
 		{
 			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
 		},
-		.roll_cmd_cycle=
-		{
-			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
-		},
-		.speed =(DEFAULT_SPEED/SPEED_MIN),	//速度控制预设值单位转换
-		.pitch_speed =(DEFAULT_SPEED/SPEED_MIN),
+		.speed =DEFAULT_SPEED,	//速度控制预设值单位转换
+		.pitch_speed =DEFAULT_SPEED,
 		.current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.pitch_current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
 	},
 		.ring =
 	{	
-		.finger_id = FINGER_RING,
-		.finger_type = FINGER_1M,
-		.actuator_A = &rs_actuator.ring_A,		//绑定关节指根
+		.actuator = &rs_actuator.ring_A,		//绑定关节指根
 		.at_fault_sta = false,
 		.pitch = 
 				{
@@ -460,21 +436,15 @@ Hand hand =
 		{
 			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
 		},
-		.roll_cmd_cycle=
-		{
-			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
-		},
-		.speed =(DEFAULT_SPEED/SPEED_MIN),	//速度控制预设值单位转换
-		.pitch_speed =(DEFAULT_SPEED/SPEED_MIN),
+		.speed =DEFAULT_SPEED,	//速度控制预设值单位转换
+		.pitch_speed =DEFAULT_SPEED,
 		.current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.pitch_current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
 	},
 		.little =
 	{	
-		.finger_id = FINGER_LITTLE,
-		.finger_type = FINGER_1M,
-		.actuator_A = &rs_actuator.little_A,		//绑定关节指根
+		.actuator = &rs_actuator.little_A,		//绑定关节指根
 		.at_fault_sta = false,
 		.pitch = 
 		{
@@ -488,13 +458,32 @@ Hand hand =
 		{
 			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
 		},
-		.roll_cmd_cycle=
+	  .speed =DEFAULT_SPEED,	//速度控制预设值单位转换
+		.pitch_speed =DEFAULT_SPEED,
+		.current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.pitch_current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
+	},
+	.thumb_yaw = 
+	{
+		.actuator = &rs_actuator.thumb_B,	//绑定关节
+		.at_fault_sta = false,
+		.pitch = 
+		{
+			.angle = (PITCH_ANGLE_MAX+PITCH_ANGLE_MIN)/2,
+			.dir_flip = false,
+			.angle_max= PITCH_ANGLE_MAX,
+			.angle_min= PITCH_ANGLE_MIN,
+		  .pos_min = PITCH_POS_MIN,
+		},
+		.pitch_cmd_cycle = 
 		{
 			.timeout_interval = HAND_CONTROL_TIMEOUT_INTERVAL_YS,
 		},
-	  .speed =(DEFAULT_SPEED/SPEED_MIN),	//速度控制预设值单位转换
-		.pitch_speed =(DEFAULT_SPEED/SPEED_MIN),
-		.current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
+		.speed =DEFAULT_SPEED,	//速度控制预设值单位转换
+		.pitch_speed =DEFAULT_SPEED,
+		
+	  .current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.pitch_current = (OVER_CURRENT_TH- OVER_CURRENT_TH_MIN)*255/(OVER_CURRENT_TH_MAX-OVER_CURRENT_TH_MIN),	//过流设置
 		.rotor_lock_count_th = OVER_CURRENT_DETECTION_TH,
 	},
@@ -502,25 +491,28 @@ Hand hand =
 };
 
 uint8_t *temperature_cmd_map[RS_ID_MAXIMUM] = {
-	&hand.thumb. roll_temperature,  &hand.thumb.pitch_temperature, 
+	&hand.thumb. pitch_temperature,  
 	&hand.index. pitch_temperature, 
 	&hand.middle.pitch_temperature, 
 	&hand.ring.  pitch_temperature, 
-	&hand.little.pitch_temperature
+	&hand.little.pitch_temperature,
+	&hand.thumb_yaw.pitch_temperature,
 };
 uint8_t *current_cmd_map[RS_ID_MAXIMUM] = {
-	&hand.thumb.roll_current, 	  &hand.thumb.pitch_current,
+	&hand.thumb.pitch_current, 	  
 	&hand.index.pitch_current,
 	&hand.middle.pitch_current,
 	&hand.ring.pitch_current,
-	&hand.little.pitch_current
+	&hand.little.pitch_current,
+	&hand.thumb_yaw.pitch_current,
 };
 uint8_t *speed_cmd_map[RS_ID_MAXIMUM] = {
-	&hand.thumb.roll_speed,    &hand.thumb.pitch_speed,
+	&hand.thumb.pitch_speed,    
 	&hand.index.pitch_speed,
 	&hand.middle.pitch_speed,
 	&hand.ring. pitch_speed,
-	&hand.little.pitch_speed
+	&hand.little.pitch_speed,
+	&hand.thumb_yaw.pitch_speed,
 };
 
 //AAC电机协议解析
@@ -606,7 +598,7 @@ uint32_t inspire_motor_init(Hand *pHand,RS_Actuator *pActuator,Inspire_Comm *pCo
 		
 		//3、保存配置
 
-		//4、写入配置
+		//4、写入配置（过流保护设置）
 		write_table_data[0] = pActuator_unit[i-1].init.over_current_th&0x00ff;//过流
 		write_table_data[1] = (pActuator_unit[i-1].init.over_current_th&0xff00)>>8;
 		write_table(current_comm,i,YS_OVER_CURRENT_TH,write_table_data);
@@ -640,27 +632,10 @@ uint32_t inspire_motor_init(Hand *pHand,RS_Actuator *pActuator,Inspire_Comm *pCo
 	}
 	//反算关节位置-根据当前电机的位置计算出当前关节的位置角度
 	updata_hand_sta(&hand,pActuator,&RS_Sta_all);
-	for(int i = 0;i<FINGER_ID_MAXIMUM-1;i++ )
+	for(int i = RS_ID_1;i<RS_ID_MAXIMUM;i++ )
 	{
-		switch(pFingle[i].finger_type)
-		{
-			case FINGER_1M:
-			{
-				pFingle[i].pitch.angle =  CONSTRAIN(pFingle[i].sta.pitch,pFingle[i].pitch.angle_max,pFingle[i].pitch.angle_min);
-				pFingle[i].last_pitch = pFingle[i].pitch.angle;
-			}
-			break;
-			case FINGER_2M:
-			{
-				pFingle[i].pitch.angle =  CONSTRAIN(pFingle[i].sta.pitch,pFingle[i].pitch.angle_max,pFingle[i].pitch.angle_min);
-				pFingle[i].roll.angle =  CONSTRAIN(pFingle[i].sta.roll,pFingle[i].roll.angle_max,pFingle[i].roll.angle_min);
-				pFingle[i].last_pitch = pFingle[i].pitch.angle;
-				pFingle[i].last_roll = pFingle[i].roll.angle;
-			}break;
-			default:
-			{
-			}break;
-		}
+		pFingle[i-1].pitch.angle =  CONSTRAIN(pFingle[i-1].sta.pitch,pFingle[i-1].pitch.angle_max,pFingle[i-1].pitch.angle_min);
+		pFingle[i-1].last_pitch = pFingle[i-1].pitch.angle;
 	}
 	return ret;
 }
@@ -677,7 +652,7 @@ uint32_t over_current_detection(RS_Actuator *pActuator)
 		if((pActuator_unit[i-1].oc->en_forword == true)&&(pActuator_unit[i-1].oc->en_backword == true))
 		{
 			pActuator_unit[i-1].oc->real_over_current_th = pActuator_unit[i-1].cmd->over_current_th_ref + ABS(pActuator_unit[i-1].sta->speed*8);
-			if(pActuator_unit[i-1].sta->current > pActuator_unit[i-1].oc->real_over_current_th)
+			if(abs(pActuator_unit[i-1].sta->current) > pActuator_unit[i-1].oc->real_over_current_th)
 			{
 				pActuator_unit[i-1].oc->count++;
 				/*得到导致堵转的运动指令方向*/
@@ -686,7 +661,7 @@ uint32_t over_current_detection(RS_Actuator *pActuator)
 					}else if((pActuator_unit[i-1].cmd->position_ref - pActuator_unit[i-1].sta->current_position)<-5){
 						pActuator_unit[i-1].oc->oc_dir--;
 					}
-				if(pActuator_unit[i-1].oc->count>pActuator_unit[i-1].oc->count_th)
+				if(pActuator_unit[i-1].oc->count > pActuator_unit[i-1].oc->count_th)
 				{
 					pActuator_unit[i-1].oc->ov_position = pActuator_unit[i-1].sta->current_position;
 					pActuator_unit[i-1].sta->fault_code |= (1<<SOFT_OVER_CURRENT_BIT);//置起软件过流标志位
@@ -766,32 +741,44 @@ uint32_t inspire_motor_control(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspir
 			current_comm = &pComm[1];  // 串口3
 		else if (i == RS_ID_5 || i == RS_ID_6)
 			current_comm = &pComm[2];  // 串口4
-//		if(pActuator_unit[i-1].cmd->over_current_th_ref != pActuator_unit[i-1].cmd->last_over_current_th_ref)
-//		{
-//			  write_table_data[0] = pActuator_unit[i-1].cmd->over_current_th_ref&0x00ff;//过流
-//			  write_table_data[1] = (pActuator_unit[i-1].cmd->over_current_th_ref&0xff00)>>8;
-//			  write_table(&inspire_comm,i,YS_OVER_CURRENT_TH,write_table_data);
-//			  pActuator_unit[i-1].cmd->last_over_current_th_ref = pActuator_unit[i-1].cmd->over_current_th_ref;
-//		}
-/*位置设置*/	
+		/*过流设置*/
+		if(pActuator_unit[i-1].cmd->over_current_th_ref != pActuator_unit[i-1].cmd->last_over_current_th_ref)
+		{
+			  write_table_data[0] = pActuator_unit[i-1].cmd->over_current_th_ref&0x00ff;//过流
+			  write_table_data[1] = (pActuator_unit[i-1].cmd->over_current_th_ref&0xff00)>>8;
+			  write_table(current_comm,i,YS_OVER_CURRENT_TH,write_table_data);
+			  pActuator_unit[i-1].cmd->last_over_current_th_ref = pActuator_unit[i-1].cmd->over_current_th_ref;
+		}
+		/*速度设置*/	
+		if(pActuator_unit[i-1].cmd->speed_step != pActuator_unit[i-1].cmd->last_speed_step)
+		{
+			write_table_data[0] = (uint16_t)pActuator_unit[i-1].cmd->speed_step&0x00ff;//过流
+			write_table_data[1] = ((uint16_t)pActuator_unit[i-1].cmd->speed_step&0xff00)>>8;
+			write_table(current_comm,i,YS_SPEED_LIMIT,write_table_data);
+			pActuator_unit[i-1].cmd->last_speed_step = pActuator_unit[i-1].cmd->speed_step;
+		}
+		/*位置设置*/	
 		if((pActuator_unit[i-1].oc->en_forword == true)&&(pActuator_unit[i-1].oc->en_backword == true))//没有过流
 		{
 				pActuator_unit[i-1].cmd->position_ref_real = CONSTRAIN(pActuator_unit[i-1].cmd->position_ref,pActuator_unit[i-1].init.pos_limit_max,pActuator_unit[i-1].init.pos_limit_min);
 				pActuator_unit[i-1].oc->block = false;
-		}else if(((pActuator_unit[i-1].oc->en_backword == true)||(pActuator_unit[i-1].oc->en_forword == true))&&(pActuator_unit[i-1].oc->block == false))//过流
+		}
+		else if(((pActuator_unit[i-1].oc->en_backword == true)||(pActuator_unit[i-1].oc->en_forword == true))&&(pActuator_unit[i-1].oc->block == false))//过流
 		{
 				if(pActuator_unit[i-1].oc->last_oc_dir<0)
 				{
 				    pActuator_unit[i-1].cmd->position_ref_real = pActuator_unit[i-1].sta->current_position+20;
 					  pActuator_unit[i-1].cmd->slope_position_f = pActuator_unit[i-1].cmd->position_ref_real;
-				}else if(pActuator_unit[i-1].oc->last_oc_dir>0){
+				}
+				else if(pActuator_unit[i-1].oc->last_oc_dir>0){
 				    pActuator_unit[i-1].cmd->position_ref_real = pActuator_unit[i-1].sta->current_position-20;
 				    pActuator_unit[i-1].cmd->slope_position_f = pActuator_unit[i-1].cmd->position_ref_real;
 				}
-				pActuator_unit[i-1].oc->block = true;
-		}else
+				pActuator_unit[i-1].oc->block = true;//该标志位置起不再判断过流
+		}
+		else
 		{
-				if(pActuator_unit[i-1].sta->current > 0.3*pActuator_unit[i-1].cmd->over_current_th_ref)
+				if(pActuator_unit[i-1].sta->current > 0.3 * pActuator_unit[i-1].cmd->over_current_th_ref)
 				{
 				    pActuator_unit[i-1].cmd->position_ref_real = pActuator_unit[i-1].sta->current_position;
 //				pActuator_unit[i-1].cmd->slope_position_f = pActuator_unit[i-1].cmd->position_ref_real;
@@ -800,12 +787,67 @@ uint32_t inspire_motor_control(RS_Actuator *pActuator,Inspire_Comm *pComm,Inspir
 		position_ref = pActuator_unit[i-1].cmd->position_ref_real;
 		if(pActuator_unit[i-1].pos_mode == RS_FOLLOW_MODE)
 		{
-			follow_mode_r(current_comm,i,pActuator_unit[i-1].cmd->position_ref);
-			//get_cycle(pActuator_unit[i-1].motor_control_cycle);
-			pActuator_unit[i-1].cmd->last_position_ref = pActuator_unit[i-1].cmd->position_ref;
-		}
-	}
-	
+					slope_position_f = pActuator_unit[i-1].cmd->slope_position_f; //提取上次位置计算输出值
+//					speed_step = pActuator_unit[i-1].cmd->speed_step;							//提取速度控制位置增量
+					speed_step = pActuator_unit[i-1].cmd->speed_step_real;							//提取速度控制位置增量
+					if(pActuator_unit[i-1].cmd->control_mode == POS_SYNC_POSITION_MODE)
+					{
+//						dec_range = float_2_u16((pActuator_unit[i-1].cmd->speed_step_real/pActuator_unit[i-1].init.speed_max),
+//																		1.0,0.0,115,40,false);
+//						if(ABS(pActuator_unit[i-1].cmd->position_ref_real - pActuator_unit[i-1].sta->current_position)<dec_range){
+//							temp_speed_step_max = GET_MINIMUM(pActuator_unit[i-1].cmd->speed_step_real,pActuator_unit[i-1].init.speed_max/3);
+//							speed_step = float_2_float((float)(ABS(pActuator_unit[i-1].cmd->position_ref_real - pActuator_unit[i-1].sta->current_position))/(float)dec_range
+//									,1.0,0,temp_speed_step_max,9*pActuator_unit[i-1].init.speed_min,false);
+//////							speed_step = (float)(ABS(pActuator_unit[i-1].cmd->position_ref_real - pActuator_unit[i-1].sta->current_position))/(float)dec_range*temp_speed_step_max;
+//							pActuator_unit[i-1].cmd->slope_position_f = CONSTRAIN(position_ref,slope_position_f+speed_step,slope_position_f-speed_step);
+//						}else{
+//							pActuator_unit[i-1].cmd->slope_position_f = CONSTRAIN(position_ref,slope_position_f+speed_step,slope_position_f-speed_step);
+//						}
+
+						pActuator_unit[i-1].cmd->slope_position_f = CONSTRAIN(position_ref,slope_position_f+speed_step,slope_position_f-speed_step);
+						//if(pActuator_unit[i-1].cmd->last_position_ref != pActuator_unit[i-1].cmd->slope_position_f)
+						{
+							pActuator_unit[i-1].cmd->last_position_ref = (uint16_t)pActuator_unit[i-1].cmd->slope_position_f;
+						  follow_mode_r(current_comm,i,pActuator_unit[i-1].cmd->last_position_ref);
+						}
+						get_cycle(pActuator_unit[i-1].motor_control_cycle);
+					}
+					else if(pActuator_unit[i-1].cmd->control_mode == POS_SYNC_FOLLOW_MODE)//通过控制指令的周期判应该使用跟随模式
+					{
+						if(pActuator_unit[i-1].cmd->follow_pos_sync_con == FOLLOW_POS_SYNC)//新收到相关运动任务，立即控制电机
+						{
+							pActuator_unit[i-1].cmd->slope_position_f = position_ref;//CONSTRAIN(position_ref,slope_position_f+speed_step,slope_position_f-speed_step);
+							pActuator_unit[i-1].cmd->last_position_ref = (uint16_t)pActuator_unit[i-1].cmd->slope_position_f;
+							follow_mode_r(current_comm,i,pActuator_unit[i-1].cmd->last_position_ref);
+							//get_cycle(pActuator_unit[i-1].motor_control_cycle);
+							pActuator_unit[i-1].cmd->follow_pos_sync_con--;
+						}
+						else if((pActuator_unit[i-1].cmd->follow_pos_sync_con < FOLLOW_POS_SYNC)&&
+										(pActuator_unit[i-1].cmd->follow_pos_sync_con > 0))//未及时收到新指令
+						{
+							pActuator_unit[i-1].cmd->slope_position_f = position_ref;//CONSTRAIN(position_ref,slope_position_f+speed_step,slope_position_f-speed_step);
+							pActuator_unit[i-1].cmd->last_position_ref = (uint16_t)pActuator_unit[i-1].cmd->slope_position_f;
+							follow_mode_r(current_comm,i,pActuator_unit[i-1].cmd->last_position_ref);
+							//get_cycle(pActuator_unit[i-1].motor_control_cycle);
+							pActuator_unit[i-1].cmd->follow_pos_sync_con--;
+						}
+						else if(pActuator_unit[i-1].cmd->follow_pos_sync_con == 0)	
+						{
+							pActuator_unit[i-1].cmd->control_mode = POS_SYNC_POSITION_MODE;
+						}
+						else
+						{
+							//空操作
+						}
+					}
+				}
+				else if(pActuator_unit[i-1].pos_mode == RS_POSITION_MODE)
+				{
+					position_mode_r(current_comm,i,pActuator_unit[i-1].cmd->position_ref);
+					//get_cycle(pActuator_unit[i-1].motor_control_cycle);
+					pActuator_unit[i-1].cmd->last_position_ref = pActuator_unit[i-1].cmd->position_ref;
+				}
+		}	
 	return true;
 }
 /*把电机的状态数据更新到推杆执行器中存储*/
@@ -863,81 +905,29 @@ bool hand_init(Hand *pHand,RS_Actuator *pActuator,RS_Cmd_All *pCmd)
 bool hand_planner(Hand *pHand,RS_Actuator *pActuator,RS_Cmd_All *pCommand)
 {
 	Finger *pFingle = (Finger *)&pHand->thumb;
-	static float pitch_angle,roll_angle;
+	static float pitch_angle;
 	static float speed_step_temp;
 	uint16_t over_current_temp;
 	uint16_t temp_position_ref;
 	uint16_t temp_last_position_ref;
-	uint16_t pos_a,pos_b,pos_c,pos_d;
 	/*指令动作分解区域*/
-	for(int i =0;i<FINGER_ID_MAXIMUM-1;i++)
+	for(int i = RS_ID_1; i < RS_ID_MAXIMUM; i++)
 	{
-		switch(pFingle[i].finger_type)
-		{
-			case FINGER_1M:
-			{
-				pitch_angle = CONSTRAIN(pFingle[i].pitch.angle,pFingle[i].pitch.angle_max,pFingle[i].pitch.angle_min);/*弯曲控制,给定角度限幅*/
-				pFingle[i].actuator_A->cmd->speed_step = (float)(pFingle[i].pitch_speed+1) * pFingle[i].actuator_A->init.speed_min;  
-				
-				temp_position_ref = (pitch_angle + pFingle[i].pitch.angle_min)*ANGLE_2_POS+pFingle[i].pitch.pos_min ;
-				temp_last_position_ref = (pFingle[i].last_pitch + pFingle[i].pitch.angle_min)*ANGLE_2_POS+pFingle[i].pitch.pos_min ;
-				speed_step_adjust(&pFingle[i],pFingle[i].actuator_A,&pFingle[i].pitch_cmd_cycle,pFingle[i].actuator_A->motor_control_cycle,temp_position_ref,temp_last_position_ref);
-				
-				pFingle[i].actuator_A->cmd->position_ref = (pitch_angle + pFingle[i].pitch.angle_min)*ANGLE_2_POS+pFingle[i].pitch.pos_min ;		/*B电机赋值*/
-				
-				pFingle[i].actuator_A->cmd->clear_fault = pFingle[i].clear_fault;
-				pFingle[i].clear_fault = 0; //赋值给cmd之后清除指令，达到接收清除错误命令只清除一次错误
-				over_current_temp = ((float)pFingle[i].pitch_current *(pFingle[i].actuator_A->init.current_max-pFingle[i].actuator_A->init.current_min)/255.0)+pFingle[i].actuator_A->init.current_min;	
-				pFingle[i].actuator_A->cmd->over_current_th_ref = over_current_temp;
-				pFingle[i].actuator_A->oc->count_th = pFingle[i].rotor_lock_count_th;
-				pFingle[i].actuator_A->cmd->temperature_th = pFingle[i].pitch_temperature;
-			}
-			break;
-			case FINGER_2M:
-			{
-				pitch_angle = CONSTRAIN(pFingle[i].pitch.angle,pFingle[i].pitch.angle_max,pFingle[i].pitch.angle_min);/*弯曲控制,给定角度限幅*/
-				roll_angle = CONSTRAIN(pFingle[i].roll.angle,pFingle[i].roll.angle_max,pFingle[i].roll.angle_min);
-				
-				pFingle[i].actuator_A->cmd->speed_step = (float)(pFingle[i].pitch_speed+1) * pFingle[i].actuator_A->init.speed_min;  
-				pFingle[i].actuator_B->cmd->speed_step = (float)(pFingle[i].roll_speed+1) * pFingle[i].actuator_B->init.speed_min; 
-				temp_position_ref = (pitch_angle + pFingle[i].pitch.angle_min)*ANGLE_2_POS+pFingle[i].pitch.pos_min ;
-				temp_last_position_ref = (pFingle[i].last_pitch + pFingle[i].pitch.angle_min)*ANGLE_2_POS+pFingle[i].pitch.pos_min ;
-				speed_step_adjust(&pFingle[i],pFingle[i].actuator_A,&pFingle[i].pitch_cmd_cycle,pFingle[i].actuator_A->motor_control_cycle,temp_position_ref,temp_last_position_ref);
-				
-				temp_position_ref = (roll_angle + pFingle[i].roll.angle_min)*ANGLE_2_POS+pFingle[i].roll.pos_min ;
-				temp_last_position_ref = (pFingle[i].last_roll + pFingle[i].roll.angle_min)*ANGLE_2_POS+pFingle[i].roll.pos_min ;
-				speed_step_adjust(&pFingle[i],pFingle[i].actuator_B,&pFingle[i].roll_cmd_cycle,pFingle[i].actuator_B->motor_control_cycle,temp_position_ref,temp_last_position_ref);
-				
-				pFingle[i].actuator_A->cmd->position_ref = (pitch_angle + pFingle[i].pitch.angle_min)*ANGLE_2_POS+pFingle[i].pitch.pos_min ;		/*B电机赋值*/
-				pFingle[i].actuator_B->cmd->position_ref = (roll_angle + pFingle[i].roll.angle_min)*ANGLE_2_POS+pFingle[i].roll.pos_min ;		/*C电机赋值*/
-				
-				/*速度，清除故障等指令生效区*/
-//				speed_step_temp = (float)(pFingle[i].speed+1) * pFingle[i].actuator_B->init.speed_min;
-//				pFingle[i].actuator_B->cmd->speed_step = speed_step_temp; 
-//				pFingle[i].actuator_B->cmd->speed_step_real =  pFingle[i].actuator_B->cmd->speed_step;//待修改
-
-//				speed_step_temp = (float)(pFingle[i].speed+1) * pFingle[i].actuator_C->init.speed_min;
-//				pFingle[i].actuator_C->cmd->speed_step = speed_step_temp; 
-//				pFingle[i].actuator_C->cmd->speed_step_real =  pFingle[i].actuator_C->cmd->speed_step;
-
-				pFingle[i].actuator_A->cmd->clear_fault = pFingle[i].clear_fault;
-				pFingle[i].actuator_B->cmd->clear_fault = pFingle[i].clear_fault;
-				pFingle[i].clear_fault = 0; //赋值给cmd之后清除指令，达到接收清除错误命令只清除一次错误
-				over_current_temp = ((float)pFingle[i].pitch_current *(pFingle[i].actuator_A->init.current_max-pFingle[i].actuator_A->init.current_min)/255.0)+pFingle[i].actuator_A->init.current_min;	
-				pFingle[i].actuator_A->cmd->over_current_th_ref = over_current_temp;
-				over_current_temp = (float)(pFingle[i].roll_current *(pFingle[i].actuator_B->init.current_max-pFingle[i].actuator_B->init.current_min)/255.0)+pFingle[i].actuator_B->init.current_min;	
-				pFingle[i].actuator_B->cmd->over_current_th_ref = over_current_temp;	
-				
-				pFingle[i].actuator_A->oc->count_th = pFingle[i].rotor_lock_count_th;
-				pFingle[i].actuator_B->oc->count_th = pFingle[i].rotor_lock_count_th;	
-				pFingle[i].actuator_A->cmd->temperature_th = pFingle[i].pitch_temperature;
-				pFingle[i].actuator_B->cmd->temperature_th = pFingle[i].roll_temperature;
-			}break;
-			default:
-			{
-			
-			}break;
-		}
+		pitch_angle = CONSTRAIN(pFingle[i-1].pitch.angle,pFingle[i-1].pitch.angle_max,pFingle[i-1].pitch.angle_min);/*弯曲控制,给定角度限幅*/
+		pFingle[i-1].actuator->cmd->speed_step = (float)pFingle[i-1].pitch_speed * pFingle[i-1].actuator->init.speed_min;  
+		
+		temp_position_ref = (pitch_angle + pFingle[i-1].pitch.angle_min)*ANGLE_2_POS+pFingle[i-1].pitch.pos_min ;
+		temp_last_position_ref = (pFingle[i-1].last_pitch + pFingle[i-1].pitch.angle_min)*ANGLE_2_POS+pFingle[i-1].pitch.pos_min ;
+		speed_step_adjust(&pFingle[i-1],pFingle[i-1].actuator,&pFingle[i-1].pitch_cmd_cycle,pFingle[i-1].actuator->motor_control_cycle,temp_position_ref,temp_last_position_ref);
+		
+		pFingle[i-1].actuator->cmd->position_ref = temp_position_ref;		/*B电机赋值*/
+		
+		pFingle[i-1].actuator->cmd->clear_fault = pFingle[i-1].clear_fault;
+		pFingle[i-1].clear_fault = 0; //赋值给cmd之后清除指令，达到接收清除错误命令只清除一次错误
+		over_current_temp = ((float)pFingle[i-1].pitch_current *(pFingle[i-1].actuator->init.current_max-pFingle[i-1].actuator->init.current_min)/255.0)+pFingle[i-1].actuator->init.current_min;	
+		pFingle[i-1].actuator->cmd->over_current_th_ref = over_current_temp;
+		pFingle[i-1].actuator->oc->count_th = pFingle[i-1].rotor_lock_count_th;
+		pFingle[i-1].actuator->cmd->temperature_th = pFingle[i-1].pitch_temperature;
 	}
 	return true;
 }
@@ -948,78 +938,33 @@ bool updata_hand_sta(Hand *pHand,RS_Actuator *pActuator,RS_Sta_All *pSta)
 	uint8_t motor_move_count;
 	Finger *pFingle = (Finger *)&pHand->thumb;
 	Finger_Angle_Sta *pFinger_sta;	
-	uint16_t pos_a,pos_b,pos_c,pos_d;
+	uint16_t pos_a;
 /*变量定义及初始化区结束*/	
-	for(int i =0;i<FINGER_ID_MAXIMUM-1;i++)
+	for(int i =RS_ID_1; i<RS_ID_MAXIMUM; i++)
 	{
-		switch(pFingle[i].finger_type)
+		pFinger_sta =  &pFingle[i-1].sta;
+		
+		pos_a = CONSTRAIN(pFingle[i-1].actuator->sta->current_position,1600,pFingle[i-1].pitch.pos_min);
+		pFinger_sta->pitch = CONSTRAIN((pos_a - pFingle[i-1].pitch.pos_min)*POS_2_ANGLE,pFingle[i-1].pitch.angle_max,pFingle[i-1].pitch.angle_min );
+		
+		pFinger_sta->fault = pFingle[i-1].actuator->sta->fault_code;
+		
+		pFinger_sta->rotor_lock_count_th =  pFingle[i-1].actuator->oc->count_th;
+		/*计算三个电机的平均电流*/
+		pFinger_sta->current =  pFingle[i-1].actuator->sta->current;
+		/*按增量计算速度*/
+		 motor_move_count = 0;
+		if(ABS(pFingle[i-1].actuator->sta->speed)>2)
+			{				motor_move_count++;			}
+			if(motor_move_count!=0)
 			{
-			case FINGER_1M:
+				pFinger_sta->speed = (ABS(pFingle[i-1].actuator->sta->speed))/motor_move_count;
+			}
+			else
 			{
-					pFinger_sta =  &pFingle[i].sta;
-					
-					pos_a = CONSTRAIN(pFingle[i].actuator_A->sta->current_position,1600,pFingle[i].pitch.pos_min);
-					pFinger_sta->pitch = CONSTRAIN((pos_a - pFingle[i].pitch.pos_min)*POS_2_ANGLE,pFingle[i].pitch.angle_max,pFingle[i].pitch.angle_min );
-					
-					pFinger_sta->fault = pFingle[i].actuator_A->sta->fault_code;
-					
-					pFinger_sta->rotor_lock_count_th =  pFingle[i].actuator_A->oc->count_th;
-					/*计算三个电机的平均电流*/
-					pFinger_sta->current =  pFingle[i].actuator_A->sta->current;
-					/*按增量计算速度*/
-					 motor_move_count = 0;
-					if(ABS(pFingle[i].actuator_A->sta->speed)>2)
-						{				motor_move_count++;			}
-						if(motor_move_count!=0)
-						{
-							pFinger_sta->speed = (ABS(pFingle[i].actuator_A->sta->speed))/motor_move_count;
-						}
-						else
-						{
-							pFinger_sta->speed = 0;
-						}
-						pFinger_sta->pitch_temperature = MIN_LIM(pFingle[i].actuator_A->sta->temperature,0);
-				}break;
-				case FINGER_2M:
-				{
-					pFinger_sta =  &pFingle[i].sta;
-					
-					pos_a = CONSTRAIN(pFingle[i].actuator_A->sta->current_position,MAX_LIMIT_POSITION,pFingle[i].pitch.pos_min);
-					pFinger_sta->mean_value =   (pos_a-pFingle[i].pitch.pos_min\
-																			+ pos_c-pFingle[i].pitch.pos_min)/2;
-					pFinger_sta->difference_value =   (pFingle[i].actuator_A->sta->current_position - pFingle[i].actuator_B->sta->current_position)/2;
-					pFinger_sta->pitch = CONSTRAIN(pFinger_sta->mean_value*POS_2_ANGLE+pFingle[i].pitch.angle_min,pFingle[i].pitch.angle_max,pFingle[i].pitch.angle_min);
-					pFinger_sta->roll = CONSTRAIN(pFinger_sta->difference_value*POS_2_ANGLE+pFingle[i].roll.angle_min\
-														 +(pFingle[i].roll.angle_max - pFingle[i].roll.angle_min)/2,pFingle[i].roll.angle_max,pFingle[i].roll.angle_min);
-					pos_b = CONSTRAIN(pFingle[i].actuator_B->sta->current_position,MAX_LIMIT_POSITION,pFingle[i].roll.pos_min);
-					pFinger_sta->fault = pFingle[i].actuator_A->sta->fault_code|pFingle[i].actuator_B->sta->fault_code;
-					
-					pFinger_sta->rotor_lock_count_th =  (pFingle[i].actuator_A->oc->count_th+pFingle[i].actuator_B->oc->count_th)/3;
-					/*计算三个电机的平均电流*/
-					pFinger_sta->current =  (pFingle[i].actuator_A->sta->current+pFingle[i].actuator_B->sta->current)/3;
-					/*按增量计算速度*/
-					 motor_move_count = 0;
-					if(ABS(pFingle[i].actuator_A->sta->speed)>2)
-					{		motor_move_count++;			}
-					if(ABS(pFingle[i].actuator_B->sta->speed)>2)
-					{		motor_move_count++;			}
-					if(motor_move_count!=0)
-					{
-							pFinger_sta->speed = (ABS(pFingle[i].actuator_A->sta->speed)+ABS(pFingle[i].actuator_B->sta->speed))/motor_move_count;
-					}
-					else
-					{
-							pFinger_sta->speed = 0;
-					}
-					pFinger_sta->pitch_temperature = MIN_LIM(pFingle[i].actuator_A->sta->temperature,0);
-					pFinger_sta->roll_temperature = MIN_LIM(pFingle[i].actuator_B->sta->temperature,0);
-				}break;
-				
-				default:
-				{
-				
-				}break;
-		}
+				pFinger_sta->speed = 0;
+			}
+			pFinger_sta->pitch_temperature = MIN_LIM(pFingle[i-1].actuator->sta->temperature,0);
 	}
 	return true;
 }
@@ -1028,65 +973,42 @@ void ys_get_cmd(Hand *pHand,RS_Actuator *pActuator,Upper_Request *pRequest,Proto
 	Finger *pFingle = (Finger *)&pHand->thumb;
 	Finger_Upper_Cmd *pFinger_cmd = (Finger_Upper_Cmd*) pRequest;
 	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
-	static float pitch_angle,roll_angle;
-  //if(aux_data->cmd_is_valid == true)
-	{
-	  switch(aux_data->frame_property)
+	static float pitch_angle;
+	switch(aux_data->frame_property)
 	{
 		case JOINT_POSITION_RCO:
 		{
-			for(int i =0;i<FINGER_ID_MAXIMUM-1;i++)
+			for(int i = RS_ID_1; i<RS_ID_MAXIMUM; i++)
 			{
-				switch(pFingle[i].finger_type)
+				
+				pitch_angle = ((pFingle[i-1].pitch.angle_max-pFingle[i].pitch.angle_min) * pFinger_cmd[i-1].pitch_angle / 255) + pFingle[i-1].pitch.angle_min;
+				if(i == RS_ID_1 || i == RS_ID_6)
 				{
-					case FINGER_1M:
-					{
-						pitch_angle = ((pFingle[i].pitch.angle_max-pFingle[i].pitch.angle_min)*pFinger_cmd[i].pitch_angle/255)+pFingle[i].pitch.angle_min;
-						 if(fabs(pitch_angle-pFingle[i].pitch.angle)>0.1)
-						 {
-								pFingle[i].last_pitch = pFingle[i].pitch.angle;
-								pFingle[i].pitch.angle= pitch_angle;
-								pFingle[i].actuator_A->cmd->follow_pos_sync_con = FOLLOW_POS_SYNC;
-						 }
-						 //get_cycle(&pFingle[i].pitch_cmd_cycle);			
-					}
-					break;
-					case FINGER_2M:
-					{
-						pitch_angle = ((pFingle[i].pitch.angle_max-pFingle[i].pitch.angle_min) * (255 - pFinger_cmd[i].pitch_angle) / 255)+pFingle[i].pitch.angle_min;
-						 if(fabs(pitch_angle-pFingle[i].pitch.angle)>0.1)
-						 {
-								pFingle[i].last_pitch = pFingle[i].pitch.angle;
-								pFingle[i].pitch.angle= pitch_angle;
-								pFingle[i].actuator_A->cmd->follow_pos_sync_con = FOLLOW_POS_SYNC;
-						 }
-						 //get_cycle(&pFingle[i].pitch_cmd_cycle);
-						 
-						 roll_angle = ((pFingle[i].roll.angle_max-pFingle[i].roll.angle_min) * (255 - pFinger_cmd[i].roll_angle) / 255)+pFingle[i].roll.angle_min;
-						 if(fabs(roll_angle-pFingle[i].roll.angle)>0.1)
-						 {
-							 pFingle[i].last_roll = pFingle[i].roll.angle;
-							 pFingle[i].roll.angle = roll_angle;
-							 pFingle[i].actuator_B->cmd->follow_pos_sync_con = FOLLOW_POS_SYNC;
-						 }
-						 //get_cycle(&pFingle[i].roll_cmd_cycle);
-					}
-					break;
-					default:
-					{
-					}break;
+					pitch_angle = ((pFingle[i-1].pitch.angle_max-pFingle[i].pitch.angle_min) * (255 - pFinger_cmd[i-1].pitch_angle) / 255) + pFingle[i-1].pitch.angle_min;
 				}
-							
+				 if(fabs(pitch_angle-pFingle[i-1].pitch.angle)>0.1)
+				 {
+						pFingle[i-1].last_pitch = pFingle[i].pitch.angle;
+						pFingle[i-1].pitch.angle= pitch_angle;
+						pFingle[i-1].actuator->cmd->follow_pos_sync_con = FOLLOW_POS_SYNC;
+				 }
+				 //get_cycle(&pFingle[i-1].pitch_cmd_cycle);			
 			}
-		}break;
-		default:
+		}
+		break;
+		case SPEED_RCO:
 		{
-		
-		}break;
+			for(int i = RS_ID_1; i < RS_ID_MAXIMUM-1; i++)
+			{
+				pFingle[i-1].speed = pFinger_cmd[i-1].speed_ref;
+				pFingle[i-1].pitch_speed = pFinger_cmd[i-1].pitch_speed;
+			}
+		}
+		break;
+		default:
+		break;
 	}
 }
-}
-
 //设置AAC电机状态
 void ys_set_status(Hand *pHand,Inspire_Data *pInspre ,Lower_Response *lower_response)
 {
@@ -1095,39 +1017,22 @@ void ys_set_status(Hand *pHand,Inspire_Data *pInspre ,Lower_Response *lower_resp
 	UNUSED(pFingle);
 	Finger_Lower_Sta *pSta = (Finger_Lower_Sta *)&lower_response->thumb;
 
-	for(int i =0;i<FINGER_ID_MAXIMUM-1;i++)
+	for(int i =RS_ID_1; i < RS_ID_MAXIMUM; i++)
 	{
-		switch(pFingle[i].finger_type)
-			{
-				case FINGER_1M:
-				{
-					pSta[i].pitch_angle = (pFingle[i].pitch.angle - pFingle[i].pitch.angle_min)*255/(pFingle[i].pitch.angle_max - pFingle[i].pitch.angle_min);
-					pSta[i].pitch_speed = float_2_u8(actuator->sta->speed,actuator->init.speed_max,actuator->init.speed_min,255,0,false);
-					pSta[i].pitch_current = float_2_u8(actuator->sta->current,actuator->init.current_max,0,255,0,false);
-					pSta[i].pitch_temperature =  MIN_LIM(actuator->sta->temperature,0);
-					actuator = pFingle[i].actuator_A;
+		pSta[i-1].pitch_angle = (pFingle[i-1].pitch.angle - pFingle[i-1].pitch.angle_min)*255/(pFingle[i-1].pitch.angle_max - pFingle[i-1].pitch.angle_min);
+		if(i == RS_ID_1 || i == RS_ID_6)
+		{
+			pSta[i-1].pitch_angle = (pFingle[i-1].pitch.angle_max - pFingle[i-1].pitch.angle)*255/(pFingle[i-1].pitch.angle_max - pFingle[i-1].pitch.angle_min);
+		}
+		actuator = pFingle[i-1].actuator;
+		pSta[i-1].pitch_speed = float_2_u8(actuator->sta->speed,actuator->init.speed_max,actuator->init.speed_min,255,0,false);
+		pSta[i-1].pitch_current = float_2_u8(actuator->sta->current,actuator->init.current_max,0,255,0,false);
+		pSta[i-1].pitch_temperature =  MIN_LIM(actuator->sta->temperature,0);
+		
 					
-				}break;
-				case FINGER_2M:
-				{
-					pSta[i].pitch_angle = (pFingle[i].pitch.angle_max - pFingle[i].pitch.angle)*255/(pFingle[i].pitch.angle_max - pFingle[i].pitch.angle_min);
-					actuator = pFingle[i].actuator_A;
-					pSta[i].pitch_speed = float_2_u8(actuator->sta->speed,actuator->init.speed_max,actuator->init.speed_min,255,0,false);
-					pSta[i].pitch_current = float_2_u8(actuator->sta->current,actuator->init.current_max,0,255,0,false);
-					pSta[i].pitch_temperature =  MIN_LIM(actuator->sta->temperature,0);
-					pSta[i].roll_angle = (pFingle[i].roll.angle_max - pFingle[i].roll.angle)*255/(pFingle[i].roll.angle_max - pFingle[i].roll.angle_min);
-					actuator = pFingle[i].actuator_B;
-					pSta[i].roll_speed = float_2_u8(actuator->sta->speed,actuator->init.speed_max,actuator->init.speed_min,255,0,false);
-					pSta[i].roll_current = float_2_u8(actuator->sta->current,actuator->init.current_max,0,255,0,false);
-					pSta[i].roll_temperature =  MIN_LIM(actuator->sta->temperature,0);
-				}break;
-				default:
-				{
-				}break;
-			}				
-		pSta[i].speed = pFingle[i].pitch_speed;
-		pSta[i].current = pFingle[i].pitch_current;
-		pSta[i].fault |= pFingle[i].clear_fault;
+		pSta[i-1].speed = pFingle[i-1].pitch_speed;
+		pSta[i-1].current = pFingle[i-1].pitch_current;
+		pSta[i-1].fault |= pFingle[i-1].clear_fault;
 				
 	}
 }
@@ -1138,12 +1043,11 @@ void hand_control_timeout_detection(Hand *pHand,RS_Actuator *pActuator)
 	Finger *pFingle = (Finger *)&pHand->thumb;
 	RS_Actuator_Unit *pActuator_unit = (RS_Actuator_Unit*) pActuator;
 	Time_Stamp* pTime_Stamp;
-	for(int i =0;i<FINGER_ID_MAXIMUM-1;i++)
+	for(int i =RS_ID_1; i<RS_ID_MAXIMUM; i++)
 	{
-		pTime_Stamp = &pFingle[i].pitch_cmd_cycle;
+		pTime_Stamp = &pFingle[i-1].pitch_cmd_cycle;
 		//timeout_detection(pTime_Stamp);
 		//timeout_detection(pTime_Stamp);
-		pTime_Stamp = &pFingle[i].roll_cmd_cycle;
 		//timeout_detection(pTime_Stamp);
 		//timeout_detection(pTime_Stamp);
 	}
@@ -1165,58 +1069,26 @@ void hand_control_timeout_detection(Hand *pHand,RS_Actuator *pActuator)
   pos	uint16_t	        当前目标位置
   last_pos		          上一次的目标位置
 */
-float speed_step_adjust(Finger *pFingle,RS_Actuator_Unit *actuator,Time_Stamp *cmd_cycle,Time_Stamp *motor_control_cycle,uint16_t pos,uint16_t last_pos)
+float speed_step_adjust(Finger *pFingle, RS_Actuator_Unit *actuator, Time_Stamp *cmd_cycle, Time_Stamp *motor_control_cycle, uint16_t pos, uint16_t last_pos)
 {
-	Speed_Adjustment_ys *speed_adj = &actuator->speed_adj;
-	float temp_adj_speed_step = 0;
-					/*tip降速*/
-		//actuator->cmd->speed_step = (float)(pFingle->speed+1) * actuator->init.speed_min; 
-		if(speed_adj->enable_speed_adj == false)
-		{
-			actuator->cmd->speed_step_real =  actuator->cmd->speed_step;
-		}else
-		{
-			if(cmd_cycle->timeout_flag == false)//如果指令是周期性到达，没有超过时间
-			{						
-					actuator->mean_cmd_time_interval = mean_filter(&actuator->MCC_mean_filter,cmd_cycle->time_interval);
-					speed_adj->control_cycle_ratio = (float)actuator->mean_cmd_time_interval/(float)motor_control_cycle->time_interval;//控制周期比例
-					if(ABS(pos - actuator->sta->current_position)/speed_adj->control_cycle_ratio<(10*actuator->cmd->speed_step*actuator->init.speed_min))//电机当前位置和目标位置比较小才去减速
-					{
-							if(cmd_cycle->cacl_speed_step == true )//指令来了，计算下一周期速度值
-							{
-								speed_adj->motor_pos_real = actuator->sta->current_position;//+ pFingle[i].actuator_B->cmd->speed_step_real*SPEED_MIN_3M_B;//计算当前位置
-								speed_adj->pos_inc = ABS((int16_t)(pos - last_pos));//本次命令导致的位置增量
-								speed_adj->cmd_inc_speed_step = speed_adj->pos_inc/speed_adj->control_cycle_ratio;
-								speed_adj->cmd_cur_pos_speed_step = ABS((int16_t)(pos - (int16_t)actuator->sta->current_position))/speed_adj->control_cycle_ratio;
-								
-								temp_adj_speed_step = 0.85*speed_adj->cmd_inc_speed_step + 0.15*speed_adj->cmd_cur_pos_speed_step;
-								cmd_cycle->cacl_speed_step = false;
-							}
-							temp_adj_speed_step = 0.9 * temp_adj_speed_step;
-							if(temp_adj_speed_step < actuator->cmd->speed_step)
-							{
-								temp_adj_speed_step = GET_MAXIMUM(temp_adj_speed_step,0.07*actuator->init.speed_max);
-								speed_adj->adj_speed_step =  mean_filter(&actuator->speed_mean_filter,temp_adj_speed_step);
-								actuator->cmd->speed_step_real = CONSTRAIN(speed_adj->adj_speed_step,
-																														actuator->cmd->speed_step_real+5.0*actuator->init.speed_min,actuator->cmd->speed_step_real-5.0*actuator->init.speed_min);									
-							}
-					}else//目标位置离当前位置远
-					{
-								//actuator->cmd->speed_step_real = lowPassFilter(&actuator->speed_step_real_filter,actuator->cmd->speed_step);
-								actuator->cmd->speed_step_real = CONSTRAIN(actuator->cmd->speed_step,
-																														actuator->cmd->speed_step_real+4.0*actuator->init.speed_min,actuator->cmd->speed_step_real-4.0*actuator->init.speed_min);
-//							actuator->cmd->speed_step_real = actuator->cmd->speed_step;
-//							clearLowPassFilter(&actuator->speed_step_real_filter);
-					}
-				
-			}else//历史上两次指令间隔长
-			{
-				//actuator->cmd->speed_step_real = lowPassFilter(&actuator->speed_step_real_filter,actuator->cmd->speed_step);
-				actuator->cmd->speed_step_real = CONSTRAIN(actuator->cmd->speed_step,
-																									actuator->cmd->speed_step_real+4.0*actuator->init.speed_min,actuator->cmd->speed_step_real-4.0*actuator->init.speed_min);
-//				actuator->cmd->speed_step_real = actuator->cmd->speed_step;
-//				clearLowPassFilter(&actuator->speed_step_real_filter);
-			}
-		}
-		return actuator->cmd->speed_step_real;
+    float distance = ABS((int16_t)pos - (int16_t)actuator->sta->current_position);
+    float speed_step = actuator->cmd->speed_step;
+    float speed_max = actuator->init.speed_max;
+    float speed_min = actuator->init.speed_min;
+
+    // 上位机255时直接全速
+    if (pFingle->pitch_speed == 255) {
+        actuator->cmd->speed_step_real = 100;
+        return speed_max;
+    }
+
+    // 距离大于某阈值时全速，小于阈值时减速
+    if (distance > 3 * speed_step * speed_min) {
+        actuator->cmd->speed_step_real = speed_max;
+    } else if (distance > speed_step * speed_min) {
+        actuator->cmd->speed_step_real = speed_step;
+    } else {
+        actuator->cmd->speed_step_real = speed_min;
+    }
+    return actuator->cmd->speed_step_real;
 }

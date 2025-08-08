@@ -54,7 +54,7 @@
 #define OVER_CURRENT_TH_MIN 300
 
 /*6过流阈值*/
-#define OVER_CURRENT_TH 2000
+#define OVER_CURRENT_TH 700
 
 /*7过温保护设置*/
 #define OVER_TEMP_TH 800
@@ -63,15 +63,15 @@
 //手指过温阈值定义
 #define RECOVER_TEMP (OVER_TEMP_TH-50) 	
 
-//手指最大速度定义
-#define SPEED_MAX 100
+////手指最大速度定义
+//#define SPEED_MAX 100
 
 /*10最小速度步进值设置*/
-#define SPEED_MIN 0.105
+#define SPEED_MIN 0.098    //电机最大速度25-->最大控制值255
 
 /*11最小速度步进值设置*/
 //手指默认速度定义//
-#define DEFAULT_SPEED (150*SPEED_MIN)     
+#define DEFAULT_SPEED 255   //默认最快     
 
 /******************************************手指过流阈值定义**************************/
 #define PITCH_ANGLE_MAX 			90.0
@@ -90,11 +90,6 @@
 #define ANGLE_2_POS_10       1600.0/90.0   
 #define POS_2_ANGLE_10       90.0/1600.0
 
-
-#define ROLL_ANGLE_MAX 			90.0
-#define ROLL_ANGLE_MIN 			0.0
-#define ROLL_POS_MIN 				0 
- 
 
 /*********************************************************************/
 
@@ -128,7 +123,7 @@ typedef enum
 	RS_POSITION_MODE = 1,						//位置模式
 	RS_FOLLOW_MODE = 2							//跟随模式
 }POSITIN_CONTROL_MODE;	
-
+  
 /*初始化数据*/
 typedef struct
 {
@@ -151,8 +146,9 @@ typedef struct
 	uint16_t last_position_ref;					//上一次位置实际设定值
 	uint16_t position_ref_real;					//限幅后的输出
 	float slope_position_f;							//中间计算值浮点,用于斜坡控制，速度控制//本地变量
-	float speed_step;										//速度加减步进值设定值
+	float speed_step;										//速度设定值
 	float speed_step_real;							//速度加减步进值实际输出值
+	float last_speed_step;              //上一次速度设定值
 	int16_t over_current_th_ref;				//过流保护设置，该值作为堵转保护的实现。
 	int16_t last_over_current_th_ref;	
 	uint16_t temperature_th;
@@ -311,58 +307,29 @@ typedef struct
 	int16_t mean_value;
 	int16_t difference_value;
 	float pitch;
-	float roll;
 	uint8_t fault;
 	float current;
 	float speed;
 	uint8_t rotor_lock_count_th;
 	uint8_t pitch_temperature;
-	uint8_t roll_temperature;
 }Finger_Angle_Sta;
-
-
-/*手指ID*/
-typedef enum
-{
-	INVALID_FINGER_ID = 0,
-	FINGER_THUMB = 1,
-	FINGER_INDEX = 2,
-	FINGER_MIDDLE = 3,
-	FINGER_RING = 4,
-	FINGER_LITTLE = 5,
-	FINGER_ID_MAXIMUM,
-}FINGER_ID;
-
-
-/*手指类型 ：根据每个手指有几个电机进行分类*/
-typedef enum
-{
-	INVALID_FINFER_TYPE = 0,
-	FINGER_1M = 1,
-	FINGER_2M = 2,
-}FINGER_TYPE;
-
 
 /*手指*/
 typedef struct 
 {
-	FINGER_ID finger_id;
-	FINGER_TYPE finger_type;
-	RS_Actuator_Unit *actuator_A;		//绑定关节 手指与执行器（电机）进行绑定
-	RS_Actuator_Unit *actuator_B;		//绑定关节
+	//FINGER_ID finger_id;
+	//FINGER_TYPE finger_type;
+	RS_Actuator_Unit *actuator;		//绑定关节 手指与执行器（电机）进行绑定
 	Finger_Angle_Sta sta;						//手指角度状态
 	uint16_t mean_value;
 	int16_t difference_value;
 	
-	Angle_Pos pitch;								//手掌中心建立3维正交坐标系，右手系，										
-	Angle_Pos roll;
+	Angle_Pos pitch;								//手掌中心建立3维正交坐标系，右手系，		
 	
-	float last_pitch;								//从can获取指令这一层面的上一个控制值，用于调速，计算指令速度										
-	float last_roll;
+	float last_pitch;								//从can获取指令这一层面的上一个控制值，用于调速，计算指令速度									
 	
 	
 	Time_Stamp pitch_cmd_cycle;			//指令接收时间戳	
-	Time_Stamp roll_cmd_cycle;
 	
 	bool clear_fault;								//承接清除故障指令分配给电机
 	uint8_t speed;									//承接速度设定指令分配给电机
@@ -370,13 +337,10 @@ typedef struct
 	uint8_t rotor_lock_count_th;		//承接过流判定阈值指令分配给电机
 	
 	uint8_t pitch_temperature;
-	uint8_t  roll_temperature;
 	
 	uint8_t pitch_speed;
-	uint8_t  roll_speed;
 	
 	uint8_t pitch_current;
-	uint8_t  roll_current;
 	
 	bool at_fault_sta;							//用于控制弯曲和侧摆的差分对发生了故障
 	
@@ -389,6 +353,7 @@ typedef struct
 	Finger middle;
 	Finger ring;
 	Finger little;
+	Finger thumb_yaw;
 }Hand;
 
 extern Inspire_Data inspire_data[RS_ID_MAXIMUM];

@@ -91,6 +91,34 @@ void clear_mean_filter(Mean_Filter *pHandle)
 	pHandle->data_index = 0;
 	pHandle->first_in = true;
 }
+
+uint32_t get_cycle(Time_Stamp* pTime_Stamp)
+{
+//	int32_t temp_time;						 
+//	if(pTime_Stamp->last_time == 0 )
+//	{
+//		pTime_Stamp->last_time = Tim7_GetTick();
+//		pTime_Stamp->current_time  = Tim7_GetTick();
+//		temp_time = 1000;
+//	}
+//	else
+//	{
+//	pTime_Stamp->last_time = pTime_Stamp->current_time;
+//	pTime_Stamp->current_time = Tim7_GetTick();	
+//	temp_time = pTime_Stamp->current_time - pTime_Stamp->last_time;
+//	}
+//	if(temp_time == 0)
+//	{
+//		pTime_Stamp->time_interval = 1;//给一个非零整值
+//	}else if(temp_time<0)
+//	{
+//		pTime_Stamp->time_interval = temp_time+UINT32_MAX;//溢出处理
+//	}else
+//	{
+//		pTime_Stamp->time_interval = temp_time;
+//	}
+}
+
 float mean_filter(Mean_Filter *pHandle,float input)
 {
 	if(pHandle->filter_volid == true)

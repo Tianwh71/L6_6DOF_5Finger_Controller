@@ -119,39 +119,29 @@ typedef struct
 typedef struct
 {
 	uint8_t pitch_angle;						//手指根部弯曲
-	uint8_t roll_angle;							//手指横滚   
 	uint8_t speed_ref;							//速度控制
 	uint8_t over_current_th;				//过流设置
 	uint8_t clear_fault;						//清除错误
 	uint8_t rotor_lock_count_th;		//堵转事件检测次数判定阈值
 	uint8_t pitch_temperature;			//温度
-	uint8_t  roll_temperature;			//温度
 	
 	uint8_t pitch_current;					//温度
-	uint8_t  roll_current;					//温度
 			
 	uint8_t pitch_speed;						//温度
-	uint8_t  roll_speed;						//温度
 
 }Finger_Upper_Cmd;
 typedef struct
 {
 	uint8_t pitch_angle;
-	uint8_t yaw_angle;
-	uint8_t roll_angle;
-	uint8_t tip_angle;
 
 	uint8_t fault;
 	uint8_t speed;
 	uint8_t current;
 	uint8_t pitch_temperature;			//温度
-	uint8_t roll_temperature;				//温度  
 	
 	uint8_t pitch_current;					//电流
-	uint8_t  roll_current;					//电流
 	
 	uint8_t pitch_speed;						//速度
-	uint8_t  roll_speed;						//速度
 }Finger_Lower_Sta;
 
 // 为了照顾can传输的传输长度，此处数据类型都定义成uint8_t,在使用时进行单位转换
@@ -162,6 +152,7 @@ typedef struct
 	Finger_Upper_Cmd middle;
 	Finger_Upper_Cmd ring;
 	Finger_Upper_Cmd little;	
+	Finger_Upper_Cmd thumb_yaw;
 	Finger_Tip_Data_All *pTip_Data_All;
 	Hand_Action *pAction;
 	uint8_t matrix_sensor_index;
@@ -177,6 +168,7 @@ typedef struct
 	Finger_Lower_Sta middle;
 	Finger_Lower_Sta ring;
 	Finger_Lower_Sta little;
+	Finger_Lower_Sta thumb_yaw;
 	Finger_Tip_Data_All *pTip_Data_All;
 	Hand_Action *pAction;
 	
@@ -249,7 +241,7 @@ typedef struct
 	Comm_Interface comm_interface; // 标记数据接收时用到的通信接口，在发返回帧的时候用该接口
 	uint32_t return_frame_makers;	 // 按位标记要返回的返回帧 |位置 bit0|压力 bit1|其它数据 bit2|暂空bit3|暂空bit4|暂空bit5|暂空bit6|暂空bit7|
 	FRAME_PROPERTY frame_property;
-	uint32_t return_touch_sensor_makers;
+	uint32_t return_touch_sensor_makers;	
 } Protocol_Aux_Data;
 // 上位机控制协议
 typedef struct

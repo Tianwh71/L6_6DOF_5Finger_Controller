@@ -186,12 +186,6 @@
             "name": "Driver",
             "files": [
               {
-                "path": "../UsrDrives/TJ_MotorDrive.h"
-              },
-              {
-                "path": "../UsrDrives/TJ_MotorDrive.c"
-              },
-              {
                 "path": "../UsrDrives/HWK_touch_sensor_drv.c"
               },
               {
@@ -199,6 +193,9 @@
               },
               {
                 "path": "../UsrDrives/upper_can_comm_drv.c"
+              },
+              {
+                "path": "../UsrDrives/AAC_drv.c"
               }
             ],
             "folders": []
@@ -216,7 +213,7 @@
                 "path": "../UsrFML/upper_comm_protocol_fml.c"
               },
               {
-                "path": "../UsrFML/TJ_Motor_Control_fml.c"
+                "path": "../UsrFML/AAC_MotorControl_fml.c"
               }
             ],
             "folders": []
@@ -238,6 +235,9 @@
               },
               {
                 "path": "../UsrCommon/data_structure.c"
+              },
+              {
+                "path": "../UsrCommon/config.c"
               }
             ],
             "folders": []
@@ -405,7 +405,8 @@
             }
           ]
         },
-        "options": "null"
+        "options": "null",
+        "archExtensions": ""
       },
       "uploader": "JLink",
       "uploadConfig": {
@@ -471,5 +472,5 @@
       }
     }
   },
-  "version": "3.5"
+  "version": "3.6"
 }

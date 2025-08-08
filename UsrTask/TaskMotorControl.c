@@ -17,6 +17,7 @@ void MotorControlTaskFun(void *argument)
 	for (;;)
 	{
 		hand_planner(&hand,&rs_actuator,&RS_Cmd_all);
+		over_current_detection(&rs_actuator);  //根据反馈信息进行过流判断
 		inspire_motor_control(&rs_actuator,inspire_comm,inspire_data);
 		//updata_hand_sta(&hand,&rs_actuator,&RS_Sta_all);
 		//follow_mode_r(inspire_comm,1,1600);
